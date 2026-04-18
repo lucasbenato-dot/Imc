@@ -55,11 +55,12 @@ def classificar_imc(imc):
     else:
         return "Obesidade grau III", "#991b1b", "🚨"
 
+@app.route("/")
 @app.route("/viabilidade")
 def viabilidade():
     return render_template("viabilidade.html")
 
-@app.route("/", methods=["GET", "POST"])
+@app.route("/imc", methods=["GET", "POST"])
 def index():
     resultado = None
     if request.method == "POST":
