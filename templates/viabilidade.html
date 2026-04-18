@@ -1,0 +1,1376 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análise de Viabilidade Imobiliária</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --navy: #0f1f3d;
+            --navy-light: #1a3460;
+            --accent: #2563eb;
+            --green: #059669;
+            --red: #dc2626;
+            --gold: #d97706;
+            --orange: #ea580c;
+            --bg: #f0f4f8;
+            --card: #ffffff;
+            --text: #0f172a;
+            --muted: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 2px 8px rgba(15,31,61,0.08), 0 1px 3px rgba(15,31,61,0.05);
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* ── HEADER ── */
+        header {
+            background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+            color: white;
+            padding: 24px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 20px rgba(15,31,61,0.3);
+        }
+
+        .header-left h1 { font-size: 20px; font-weight: 700; letter-spacing: 0.3px; }
+        .header-left p  { font-size: 12px; opacity: 0.6; margin-top: 3px; letter-spacing: 0.5px; }
+
+        .header-brand {
+            text-align: right;
+            border-left: 1px solid rgba(255,255,255,0.12);
+            padding-left: 24px;
+            margin-left: 24px;
+        }
+
+        .header-brand .brand-name {
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            color: white;
+            line-height: 1.1;
+        }
+
+        .header-brand .brand-name em {
+            font-style: normal;
+            color: #93c5fd;
+        }
+
+        .header-brand .brand-sub {
+            font-size: 10px;
+            letter-spacing: 2.5px;
+            opacity: 0.5;
+            text-transform: uppercase;
+            margin-top: 4px;
+        }
+
+        /* ── LAYOUT ── */
+        main {
+            display: grid;
+            grid-template-columns: 380px 1fr;
+            min-height: calc(100vh - 81px);
+        }
+
+        /* ── INPUT PANEL ── */
+        .input-panel {
+            background: var(--navy);
+            padding: 28px 24px;
+            color: white;
+            position: sticky;
+            top: 0;
+            height: calc(100vh - 81px);
+            overflow-y: auto;
+        }
+
+        .panel-title {
+            font-size: 10px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 2.5px; color: rgba(255,255,255,0.4);
+            margin-bottom: 22px; padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .section-label {
+            font-size: 10px; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 1.5px; color: rgba(255,255,255,0.35);
+            margin: 20px 0 12px;
+        }
+
+        .input-group { margin-bottom: 14px; }
+
+        .input-group label {
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 12px; font-weight: 500; margin-bottom: 7px;
+            color: rgba(255,255,255,0.75);
+        }
+
+        .input-group label em {
+            font-style: normal; font-size: 10px;
+            color: rgba(255,255,255,0.35); font-weight: 400;
+        }
+
+        .input-wrap { position: relative; display: flex; align-items: center; }
+
+        .input-wrap .prefix {
+            position: absolute; left: 12px; font-size: 12px;
+            color: rgba(255,255,255,0.4); pointer-events: none;
+            font-weight: 500; white-space: nowrap;
+        }
+
+        .input-wrap input {
+            width: 100%; padding: 11px 12px 11px 46px;
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 8px; color: white; font-size: 15px;
+            font-weight: 600; outline: none;
+            transition: background 0.2s, border-color 0.2s;
+        }
+
+        .input-wrap input:focus {
+            background: rgba(255,255,255,0.12);
+            border-color: rgba(99,160,255,0.5);
+        }
+
+        .input-wrap input::placeholder { color: rgba(255,255,255,0.2); }
+        .input-wrap.pct .prefix { left: 10px; }
+        .input-wrap.pct input  { padding-left: 28px; }
+
+        /* Efficiency input – destaque sutil */
+        .input-wrap.efficiency-wrap input {
+            background: rgba(37,99,235,0.15);
+            border-color: rgba(99,160,255,0.25);
+        }
+
+        .input-wrap.efficiency-wrap input:focus {
+            background: rgba(37,99,235,0.22);
+            border-color: rgba(99,160,255,0.6);
+        }
+
+        .divider { height: 1px; background: rgba(255,255,255,0.08); margin: 18px 0; }
+
+        /* ── PERMUTA TABS ── */
+        .permuta-block {
+            background: rgba(234,88,12,0.1);
+            border: 1px solid rgba(234,88,12,0.22);
+            border-radius: 10px;
+            padding: 14px;
+            margin-top: 4px;
+        }
+
+        .ptabs {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 14px;
+        }
+
+        .ptab {
+            flex: 1;
+            padding: 8px 6px;
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 7px;
+            background: transparent;
+            color: rgba(255,255,255,0.45);
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .ptab:hover { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.7); }
+
+        .ptab.active {
+            background: rgba(234,88,12,0.3);
+            border-color: rgba(234,88,12,0.55);
+            color: #fed7aa;
+        }
+
+        .tab-content { display: none; }
+        .tab-content.show { display: block; }
+
+        .permuta-summary {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 12px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255,255,255,0.07);
+            font-size: 11px;
+            color: rgba(255,255,255,0.4);
+        }
+
+        .permuta-summary strong { color: #fed7aa; font-weight: 700; }
+
+        /* Reference box */
+        .ref-box {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 10px; padding: 12px 14px; margin-top: 20px;
+        }
+
+        .ref-box h4 {
+            font-size: 9px; text-transform: uppercase; letter-spacing: 2px;
+            color: rgba(255,255,255,0.3); margin-bottom: 10px;
+        }
+
+        .ref-row {
+            display: flex; justify-content: space-between;
+            font-size: 11px; padding: 4px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+
+        .ref-row:last-child { border-bottom: none; }
+        .ref-row span:first-child { color: rgba(255,255,255,0.45); }
+        .ref-row span:last-child  { font-weight: 600; color: rgba(255,255,255,0.8); }
+
+        .note { font-size: 10px; color: rgba(255,255,255,0.25); margin-top: 14px; line-height: 1.6; }
+
+        /* ── RESULTS PANEL ── */
+        .results-panel { padding: 32px; overflow-y: auto; }
+
+        .results-title {
+            font-size: 10px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 2.5px; color: var(--muted);
+            margin-bottom: 24px; padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 14px; }
+        .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 20px; }
+
+        .card { background: var(--card); border-radius: 12px; padding: 18px 20px; box-shadow: var(--shadow); }
+
+        .card-label {
+            font-size: 10px; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 1.2px; color: var(--muted); margin-bottom: 8px;
+        }
+
+        .card-main { display: flex; align-items: baseline; gap: 4px; }
+        .card-value { font-size: 26px; font-weight: 800; color: var(--text); line-height: 1; }
+        .card-unit  { font-size: 13px; color: var(--muted); font-weight: 500; }
+        .card-sub   { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+        .card.blue { background: linear-gradient(135deg, #1d4ed8, #3b82f6); }
+        .card.blue .card-label, .card.blue .card-sub, .card.blue .card-unit { color: rgba(255,255,255,0.65); }
+        .card.blue .card-value { color: white; }
+
+        /* Financial cards */
+        .fin-card { background: var(--card); border-radius: 12px; padding: 20px; box-shadow: var(--shadow); }
+        .fin-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.2px; color: var(--muted); margin-bottom: 10px; }
+        .fin-value { font-size: 28px; font-weight: 800; color: var(--text); }
+        .fin-sub   { font-size: 11px; color: var(--muted); margin-top: 5px; }
+
+        /* Breakdown */
+        .breakdown { background: var(--card); border-radius: 14px; padding: 24px; box-shadow: var(--shadow); margin-bottom: 20px; }
+
+        .breakdown h3 {
+            font-size: 11px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 1.5px; color: var(--text); margin-bottom: 18px;
+        }
+
+        .brow {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 13.5px;
+        }
+
+        .brow:last-child { border-bottom: none; }
+        .brow.total { padding-top: 16px; font-size: 15px; font-weight: 700; }
+
+        .brow.permuta-row {
+            background: rgba(234,88,12,0.04);
+            margin: 0 -8px; padding: 10px 8px; border-radius: 6px;
+        }
+
+        .brow .blabel       { color: var(--muted); }
+        .brow.total .blabel { color: var(--text); }
+
+        .pos        { color: var(--green);  font-weight: 700; }
+        .neg        { color: var(--red);    font-weight: 700; }
+        .neg-orange { color: var(--orange); font-weight: 700; }
+
+        /* Bar chart */
+        .bars { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--border); }
+
+        .bars h4 {
+            font-size: 10px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 1.5px; color: var(--muted); margin-bottom: 14px;
+        }
+
+        .bar-item  { margin-bottom: 10px; }
+
+        .bar-head {
+            display: flex; justify-content: space-between;
+            font-size: 12px; margin-bottom: 5px; color: var(--muted);
+        }
+
+        .bar-head strong { color: var(--text); font-weight: 600; }
+
+        .bar-track { height: 7px; background: var(--border); border-radius: 4px; overflow: hidden; }
+
+        .bar-fill {
+            height: 100%; border-radius: 4px;
+            transition: width 0.6s cubic-bezier(.4,0,.2,1);
+        }
+
+        .b-const   { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+        .b-comm    { background: linear-gradient(90deg, #8b5cf6, #a78bfa); }
+        .b-tax     { background: linear-gradient(90deg, #ec4899, #f472b6); }
+        .b-grant   { background: linear-gradient(90deg, #94a3b8, #cbd5e1); }
+        .b-permute { background: linear-gradient(90deg, #ea580c, #fb923c); }
+        .b-lucro   { background: linear-gradient(90deg, #059669, #10b981); }
+        .b-loss    { background: linear-gradient(90deg, #dc2626, #ef4444); }
+
+        /* Metrics row */
+        .metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 20px; }
+
+        .metric { background: var(--card); border-radius: 10px; padding: 14px 16px; box-shadow: var(--shadow); text-align: center; }
+        .metric-val { font-size: 20px; font-weight: 800; color: var(--text); }
+        .metric-lbl { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 3px; }
+
+        /* Profit result */
+        .result-card {
+            border-radius: 16px; padding: 36px; text-align: center;
+            margin-bottom: 24px; transition: background 0.4s;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        }
+
+        .result-card.profit  { background: linear-gradient(135deg, #047857, #059669, #10b981); }
+        .result-card.loss    { background: linear-gradient(135deg, #991b1b, #dc2626, #ef4444); }
+        .result-card.neutral { background: linear-gradient(135deg, #374151, #6b7280); }
+        .result-card * { color: white; }
+
+        .result-label  { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; opacity: 0.75; margin-bottom: 10px; }
+        .result-value  { font-size: 52px; font-weight: 900; line-height: 1; letter-spacing: -1px; }
+        .result-margin { font-size: 15px; opacity: 0.8; margin-top: 10px; }
+
+        .result-roi {
+            display: inline-block; margin-top: 14px;
+            background: rgba(255,255,255,0.15);
+            padding: 5px 16px; border-radius: 20px;
+            font-size: 13px; font-weight: 600;
+        }
+
+        /* ── CASHFLOW SECTION ── */
+        .cf-section {
+            background: var(--card);
+            border-radius: 14px;
+            padding: 24px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+            border-top: 3px solid var(--accent);
+        }
+
+        .cf-section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .cf-section-header h3 {
+            font-size: 11px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 1.5px; color: var(--text);
+        }
+
+        .cf-badge {
+            font-size: 10px;
+            background: #eff6ff;
+            color: var(--accent);
+            border: 1px solid #bfdbfe;
+            border-radius: 12px;
+            padding: 3px 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        /* ROI metric cards */
+        .roi-cards {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .roi-card {
+            background: var(--bg);
+            border-radius: 10px;
+            padding: 14px 16px;
+            border: 1px solid var(--border);
+        }
+
+        .roi-card.highlight {
+            background: #eff6ff;
+            border-color: #bfdbfe;
+        }
+
+        .roi-card-label {
+            font-size: 10px; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 1px; color: var(--muted); margin-bottom: 6px;
+        }
+
+        .roi-card.highlight .roi-card-label { color: var(--accent); }
+
+        .roi-card-value {
+            font-size: 22px; font-weight: 800; color: var(--text); line-height: 1;
+        }
+
+        .roi-card.highlight .roi-card-value { color: var(--accent); }
+
+        .roi-card-sub { font-size: 10px; color: var(--muted); margin-top: 4px; }
+
+        /* Phase timeline */
+        .cf-phases {
+            display: grid;
+            grid-template-columns: 1fr 24px 1fr 24px 1fr;
+            gap: 0;
+            align-items: start;
+            margin-bottom: 24px;
+        }
+
+        .cf-arrow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--border);
+            font-size: 18px;
+            padding-top: 32px;
+        }
+
+        .cf-phase {
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .cf-phase-head {
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .phase-inicio .cf-phase-head  { background: #f0f9ff; }
+        .phase-obra .cf-phase-head    { background: #fefce8; }
+        .phase-entrega .cf-phase-head { background: #f0fdf4; }
+
+        .cf-phase-name {
+            font-size: 11px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+
+        .phase-inicio .cf-phase-name  { color: #0369a1; }
+        .phase-obra .cf-phase-name    { color: #a16207; }
+        .phase-entrega .cf-phase-name { color: #15803d; }
+
+        .cf-phase-tag {
+            font-size: 10px; color: var(--muted);
+            background: white; border-radius: 8px;
+            padding: 2px 8px; border: 1px solid var(--border);
+        }
+
+        .cf-rows { padding: 10px 14px; }
+
+        .cf-row {
+            display: flex; justify-content: space-between;
+            font-size: 11.5px; padding: 4px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .cf-row:last-child { border-bottom: none; }
+        .cf-row.in  span:first-child { color: var(--muted); }
+        .cf-row.in  span:last-child  { color: var(--green); font-weight: 600; }
+        .cf-row.out span:first-child { color: var(--muted); }
+        .cf-row.out span:last-child  { color: var(--red);   font-weight: 600; }
+
+        .cf-net {
+            padding: 8px 14px;
+            display: flex; justify-content: space-between; align-items: center;
+            border-top: 1px solid var(--border);
+            font-size: 12px; font-weight: 700;
+        }
+
+        .phase-inicio .cf-net  { background: #f0f9ff; }
+        .phase-obra .cf-net    { background: #fefce8; }
+        .phase-entrega .cf-net { background: #f0fdf4; }
+
+        .cf-net span:first-child { color: var(--muted); font-weight: 500; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* VGV breakdown bar */
+        .cf-vgv { margin-top: 4px; }
+
+        .cf-vgv-label {
+            font-size: 10px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 1px; color: var(--muted); margin-bottom: 8px;
+        }
+
+        .cf-vgv-track {
+            display: flex; height: 10px; border-radius: 5px; overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .cf-seg { height: 100%; transition: width 0.5s ease; }
+        .seg-ato    { background: #3b82f6; }
+        .seg-par    { background: #8b5cf6; }
+        .seg-chaves { background: #10b981; }
+        .seg-saldo  { background: #94a3b8; }
+
+        .cf-vgv-legend {
+            display: flex; gap: 16px; flex-wrap: wrap;
+        }
+
+        .cf-vgv-legend span {
+            display: flex; align-items: center; gap: 5px;
+            font-size: 11px; color: var(--muted);
+        }
+
+        .cf-vgv-legend strong { color: var(--text); }
+
+        .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+        .dot-ato    { background: #3b82f6; }
+        .dot-par    { background: #8b5cf6; }
+        .dot-chaves { background: #10b981; }
+        .dot-saldo  { background: #94a3b8; }
+
+        /* ── TIR block ── */
+        .tir-block {
+            background: linear-gradient(135deg, #0f1f3d, #1a3460, #1e4db7);
+            border-radius: 12px;
+            padding: 18px 22px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .tir-left { flex: 1; }
+
+        .tir-title {
+            font-size: 10px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 2px; color: rgba(255,255,255,0.5); margin-bottom: 4px;
+        }
+
+        .tir-desc {
+            font-size: 11px; color: rgba(255,255,255,0.35); line-height: 1.5;
+        }
+
+        .tir-values {
+            display: flex; align-items: center; gap: 0;
+        }
+
+        .tir-item {
+            text-align: center; padding: 0 20px;
+        }
+
+        .tir-item:first-child { border-right: 1px solid rgba(255,255,255,0.15); }
+
+        .tir-val {
+            display: block;
+            font-size: 32px; font-weight: 900; color: white; line-height: 1;
+            letter-spacing: -0.5px;
+        }
+
+        .tir-val.invalid { font-size: 20px; opacity: 0.4; }
+
+        .tir-sub {
+            display: block;
+            font-size: 10px; color: rgba(255,255,255,0.45);
+            text-transform: uppercase; letter-spacing: 1px; margin-top: 4px;
+        }
+
+        /* Cashflow indicator in input panel */
+        .cf-indicator {
+            display: flex; justify-content: space-between;
+            font-size: 11px; margin-top: 10px; padding: 8px 10px;
+            background: rgba(255,255,255,0.07);
+            border-radius: 6px; border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .cf-indicator span { color: rgba(255,255,255,0.5); }
+        .cf-indicator strong { color: white; }
+        .cf-indicator .cf-warn { color: #fca5a5; }
+
+        /* Footer */
+        footer {
+            background: var(--navy); color: rgba(255,255,255,0.35);
+            text-align: center; font-size: 10px; letter-spacing: 0.5px;
+            padding: 16px; line-height: 1.8;
+        }
+
+        @media (max-width: 960px) {
+            main { grid-template-columns: 1fr; }
+            .input-panel { position: static; height: auto; }
+            .grid-3 { grid-template-columns: repeat(2, 1fr); }
+            .metrics { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-left">
+        <h1>Análise de Viabilidade Imobiliária</h1>
+        <p>Empreendimento Residencial Multifamiliar + Comercial · ARP 2.5 · Florianópolis</p>
+    </div>
+    <div class="header-brand">
+        <div class="brand-name">Kósmos <em>Empreendimentos</em></div>
+        <div class="brand-sub">Estudo de Viabilidade</div>
+    </div>
+</header>
+
+<main>
+    <!-- ── INPUT PANEL ── -->
+    <aside class="input-panel">
+        <div class="panel-title">Parâmetros do Projeto</div>
+
+        <div class="section-label">Terreno</div>
+
+        <div class="input-group">
+            <label>Área do Terreno <em>m²</em></label>
+            <div class="input-wrap">
+                <span class="prefix">m²</span>
+                <input type="number" id="terrain" value="1670" min="100" step="10" placeholder="1670">
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label>
+                Eficiência Privativo / Total Construído
+                <em>% · ref. 57,4%</em>
+            </label>
+            <div class="input-wrap pct efficiency-wrap">
+                <span class="prefix">%</span>
+                <input type="number" id="efficiency" value="57.4" min="10" max="95" step="0.5" placeholder="57.4">
+            </div>
+        </div>
+
+        <div class="divider"></div>
+        <div class="section-label">Custos de Construção e Venda</div>
+
+        <div class="input-group">
+            <label>Custo de Construção <em>R$/m² construído</em></label>
+            <div class="input-wrap">
+                <span class="prefix">R$</span>
+                <input type="number" id="constructionCost" value="3800" min="0" step="100" placeholder="3800">
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label>Valor de Venda <em>R$/m² privativo</em></label>
+            <div class="input-wrap">
+                <span class="prefix">R$</span>
+                <input type="number" id="salePrice" value="17500" min="0" step="100" placeholder="17500">
+            </div>
+        </div>
+
+        <div class="divider"></div>
+        <div class="section-label">Deduções sobre Receita</div>
+
+        <div class="input-group">
+            <label>Comissão de Venda <em>%</em></label>
+            <div class="input-wrap pct">
+                <span class="prefix">%</span>
+                <input type="number" id="commission" value="5" min="0" max="100" step="0.5" placeholder="5">
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label>Impostos <em>%</em></label>
+            <div class="input-wrap pct">
+                <span class="prefix">%</span>
+                <input type="number" id="taxes" value="4" min="0" max="100" step="0.5" placeholder="4">
+            </div>
+        </div>
+
+        <div class="divider"></div>
+        <div class="section-label">Permuta / Aquisição do Terreno</div>
+
+        <div class="permuta-block">
+            <div class="ptabs">
+                <button class="ptab active" onclick="switchTab('m2')">Permuta em m²</button>
+                <button class="ptab"        onclick="switchTab('rs')">Permuta em R$</button>
+            </div>
+
+            <div id="tab-m2" class="tab-content show">
+                <div class="input-group" style="margin-bottom:0">
+                    <label>m² privativos entregues ao proprietário <em>m²</em></label>
+                    <div class="input-wrap">
+                        <span class="prefix">m²</span>
+                        <input type="number" id="permuteM2" value="0" min="0" step="5" placeholder="0">
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-rs" class="tab-content">
+                <div class="input-group" style="margin-bottom:0">
+                    <label>Valor em R$ pago pelo terreno <em>R$</em></label>
+                    <div class="input-wrap">
+                        <span class="prefix">R$</span>
+                        <input type="number" id="permuteR" value="0" min="0" step="10000" placeholder="0">
+                    </div>
+                </div>
+            </div>
+
+            <div class="permuta-summary">
+                <span>Permuta m²: <strong id="ps-m2">0 m²</strong></span>
+                <span>Permuta R$: <strong id="ps-r">R$ 0</strong></span>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+        <div class="section-label">Estrutura de Recebimento</div>
+
+        <div class="input-group">
+            <label>Prazo de Obra <em>meses</em></label>
+            <div class="input-wrap">
+                <span class="prefix" style="font-size:11px">mês</span>
+                <input type="number" id="prazo" value="36" min="6" max="120" step="1" placeholder="36">
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label>% Ato (entrada) <em>% do VGV</em></label>
+            <div class="input-wrap pct">
+                <span class="prefix">%</span>
+                <input type="number" id="atoPct" value="5" min="0" max="100" step="1" placeholder="5">
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label>% Parcelas durante obra <em>% do VGV</em></label>
+            <div class="input-wrap pct">
+                <span class="prefix">%</span>
+                <input type="number" id="parPct" value="20" min="0" max="100" step="1" placeholder="20">
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label>% Chaves <em>% do VGV</em></label>
+            <div class="input-wrap pct">
+                <span class="prefix">%</span>
+                <input type="number" id="chavesPct" value="10" min="0" max="100" step="1" placeholder="10">
+            </div>
+        </div>
+
+        <div class="cf-indicator" id="cf-indicator">
+            <span>Durante obra: <strong id="ci-durante">35%</strong></span>
+            <span>Saldo/Financ.: <strong id="ci-saldo">65%</strong></span>
+        </div>
+
+        <p class="note">Altere a eficiência para simular diferentes configurações de projeto. A outorga onerosa é estimada pelo coeficiente do projeto de referência (R$ 551/m² de terreno).</p>
+    </aside>
+
+    <!-- ── RESULTS PANEL ── -->
+    <section class="results-panel">
+        <div class="results-title">Resultado da Análise</div>
+
+        <!-- Projeto físico – linha 1 -->
+        <div class="grid-3">
+            <div class="card">
+                <div class="card-label">Área Total Construída</div>
+                <div class="card-main">
+                    <span class="card-value" id="r-totalBuilt">—</span>
+                    <span class="card-unit">m²</span>
+                </div>
+                <div class="card-sub" id="r-ca">CA 3,97×</div>
+            </div>
+            <div class="card">
+                <div class="card-label">Área Privativa Total</div>
+                <div class="card-main">
+                    <span class="card-value" id="r-private">—</span>
+                    <span class="card-unit">m²</span>
+                </div>
+                <div class="card-sub" id="r-effSub">Eficiência 57,4%</div>
+            </div>
+            <div class="card blue">
+                <div class="card-label">Unidades Estimadas</div>
+                <div class="card-main">
+                    <span class="card-value" id="r-apts">—</span>
+                    <span class="card-unit">aptos</span>
+                </div>
+                <div class="card-sub" id="r-cob">+ 0 coberturas</div>
+            </div>
+        </div>
+
+        <!-- Projeto físico – linha 2 -->
+        <div class="grid-3">
+            <div class="card">
+                <div class="card-label">Área à Venda</div>
+                <div class="card-main">
+                    <span class="card-value" id="r-sellable">—</span>
+                    <span class="card-unit">m²</span>
+                </div>
+                <div class="card-sub" id="r-sellableSub">Privativa disponível</div>
+            </div>
+            <div class="card">
+                <div class="card-label">Permuta (m² entregue)</div>
+                <div class="card-main">
+                    <span class="card-value" id="r-permuteM2">—</span>
+                    <span class="card-unit">m²</span>
+                </div>
+                <div class="card-sub" id="r-permuteR">+ R$ 0 em dinheiro</div>
+            </div>
+            <div class="card">
+                <div class="card-label">Vagas de Garagem</div>
+                <div class="card-main">
+                    <span class="card-value" id="r-parking">—</span>
+                    <span class="card-unit">vagas</span>
+                </div>
+                <div class="card-sub" id="r-parkingSub">pilotis + intermediário</div>
+            </div>
+        </div>
+
+        <!-- Financeiro -->
+        <div class="grid-2">
+            <div class="fin-card">
+                <div class="fin-label">Receita Bruta (VGV)</div>
+                <div class="fin-value" id="r-revenue">—</div>
+                <div class="fin-sub" id="r-revenueSub">Área à venda × preço/m²</div>
+            </div>
+            <div class="fin-card">
+                <div class="fin-label">Custo Total de Construção</div>
+                <div class="fin-value" id="r-construction">—</div>
+                <div class="fin-sub">Área total construída × custo/m²</div>
+            </div>
+        </div>
+
+        <!-- Indicadores -->
+        <div class="metrics">
+            <div class="metric">
+                <div class="metric-val" id="m-margin">—</div>
+                <div class="metric-lbl">Margem Líquida</div>
+            </div>
+            <div class="metric">
+                <div class="metric-val" id="m-roi">—</div>
+                <div class="metric-lbl">ROI sobre Custo</div>
+            </div>
+            <div class="metric">
+                <div class="metric-val" id="m-ppm">—</div>
+                <div class="metric-lbl">Lucro/m² Vendável</div>
+            </div>
+        </div>
+
+        <!-- ── FLUXO DE CAIXA E ROI ── -->
+        <div class="cf-section">
+            <div class="cf-section-header">
+                <h3>Fluxo de Caixa &amp; ROI sobre Capital Empregado</h3>
+                <span class="cf-badge" id="cf-badge">36 meses de obra</span>
+            </div>
+
+            <!-- ROI metrics -->
+            <div class="roi-cards">
+                <div class="roi-card highlight">
+                    <div class="roi-card-label">Capital Máximo Necessário</div>
+                    <div class="roi-card-value" id="cf-capital">—</div>
+                    <div class="roi-card-sub">Pico de caixa negativo acumulado</div>
+                </div>
+            </div>
+
+            <!-- TIR -->
+            <div class="tir-block">
+                <div class="tir-left">
+                    <div class="tir-title">TIR — Taxa Interna de Retorno</div>
+                    <div class="tir-desc">Taxa de desconto que zera o VPL do fluxo de caixa mensal do projeto</div>
+                </div>
+                <div class="tir-values">
+                    <div class="tir-item">
+                        <span class="tir-val" id="cf-tir-mensal">—</span>
+                        <span class="tir-sub">ao mês</span>
+                    </div>
+                    <div class="tir-item">
+                        <span class="tir-val" id="cf-tir-anual">—</span>
+                        <span class="tir-sub">ao ano</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3 phases -->
+            <div class="cf-phases">
+                <!-- Início -->
+                <div class="cf-phase phase-inicio">
+                    <div class="cf-phase-head">
+                        <span class="cf-phase-name">Início</span>
+                        <span class="cf-phase-tag">Mês 0</span>
+                    </div>
+                    <div class="cf-rows">
+                        <div class="cf-row in">
+                            <span>Ato (entrada)</span>
+                            <span id="cf-ato">—</span>
+                        </div>
+                        <div class="cf-row out">
+                            <span>(-) Outorga</span>
+                            <span id="cf-grant-out">—</span>
+                        </div>
+                        <div class="cf-row out" id="row-perm">
+                            <span>(-) Permuta R$</span>
+                            <span id="cf-perm-out">—</span>
+                        </div>
+                        <div class="cf-row out">
+                            <span>(-) 1ª parcela obra</span>
+                            <span id="cf-const1">—</span>
+                        </div>
+                    </div>
+                    <div class="cf-net">
+                        <span>Saldo mês 0</span>
+                        <span id="cf-net0">—</span>
+                    </div>
+                </div>
+
+                <div class="cf-arrow">›</div>
+
+                <!-- Obra -->
+                <div class="cf-phase phase-obra">
+                    <div class="cf-phase-head">
+                        <span class="cf-phase-name">Obra</span>
+                        <span class="cf-phase-tag" id="cf-months-label">Meses 1–35</span>
+                    </div>
+                    <div class="cf-rows">
+                        <div class="cf-row in">
+                            <span>Parcelas mensais</span>
+                            <span id="cf-par-in">—</span>
+                        </div>
+                        <div class="cf-row out">
+                            <span>(-) Construção mensal</span>
+                            <span id="cf-const-out">—</span>
+                        </div>
+                    </div>
+                    <div class="cf-net">
+                        <span>Líquido / mês</span>
+                        <span id="cf-net-obra">—</span>
+                    </div>
+                </div>
+
+                <div class="cf-arrow">›</div>
+
+                <!-- Entrega -->
+                <div class="cf-phase phase-entrega">
+                    <div class="cf-phase-head">
+                        <span class="cf-phase-name">Entrega</span>
+                        <span class="cf-phase-tag" id="cf-month-entrega">Mês 36</span>
+                    </div>
+                    <div class="cf-rows">
+                        <div class="cf-row in">
+                            <span>Parcela final</span>
+                            <span id="cf-par-final">—</span>
+                        </div>
+                        <div class="cf-row in">
+                            <span>Chaves</span>
+                            <span id="cf-chaves-in">—</span>
+                        </div>
+                        <div class="cf-row in">
+                            <span>Saldo / Financ.</span>
+                            <span id="cf-saldo-in">—</span>
+                        </div>
+                        <div class="cf-row out">
+                            <span>(-) Comissão + Impostos</span>
+                            <span id="cf-deducoes">—</span>
+                        </div>
+                    </div>
+                    <div class="cf-net">
+                        <span>Saldo entrega</span>
+                        <span id="cf-net-entrega">—</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VGV composition bar -->
+            <div class="cf-vgv">
+                <div class="cf-vgv-label">Composição do VGV</div>
+                <div class="cf-vgv-track">
+                    <div class="cf-seg seg-ato"    id="bar-cf-ato"    style="width:5%"></div>
+                    <div class="cf-seg seg-par"    id="bar-cf-par"    style="width:20%"></div>
+                    <div class="cf-seg seg-chaves" id="bar-cf-chaves" style="width:10%"></div>
+                    <div class="cf-seg seg-saldo"  id="bar-cf-saldo"  style="width:65%"></div>
+                </div>
+                <div class="cf-vgv-legend">
+                    <span><span class="dot dot-ato"></span>Ato <strong id="l-ato">5%</strong></span>
+                    <span><span class="dot dot-par"></span>Parcelas obra <strong id="l-par">20%</strong></span>
+                    <span><span class="dot dot-chaves"></span>Chaves <strong id="l-chaves">10%</strong></span>
+                    <span><span class="dot dot-saldo"></span>Saldo/Financ. <strong id="l-saldo">65%</strong></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Breakdown detalhado -->
+        <div class="breakdown">
+            <h3>Composição de Custos e Resultado Final</h3>
+
+            <div class="brow">
+                <span class="blabel">Receita Bruta (VGV)</span>
+                <span class="pos" id="b-revenue">—</span>
+            </div>
+            <div class="brow">
+                <span class="blabel">&nbsp;&nbsp;(-) Custo de Construção</span>
+                <span class="neg" id="b-construction">—</span>
+            </div>
+            <div class="brow">
+                <span class="blabel">&nbsp;&nbsp;(-) Comissão de Venda</span>
+                <span class="neg" id="b-commission">—</span>
+            </div>
+            <div class="brow">
+                <span class="blabel">&nbsp;&nbsp;(-) Impostos</span>
+                <span class="neg" id="b-taxes">—</span>
+            </div>
+            <div class="brow">
+                <span class="blabel">&nbsp;&nbsp;(-) Outorga Onerosa</span>
+                <span class="neg" id="b-grant">—</span>
+            </div>
+            <div class="brow permuta-row">
+                <span class="blabel">&nbsp;&nbsp;(-) Permuta em m² <small id="b-permuteM2-label" style="color:var(--muted)"></small></span>
+                <span class="neg-orange" id="b-permuteM2">—</span>
+            </div>
+            <div class="brow permuta-row">
+                <span class="blabel">&nbsp;&nbsp;(-) Permuta em R$</span>
+                <span class="neg-orange" id="b-permuteR">—</span>
+            </div>
+            <div class="brow total">
+                <span class="blabel">= Resultado Líquido</span>
+                <span id="b-profit">—</span>
+            </div>
+
+            <!-- Bar chart -->
+            <div class="bars">
+                <h4>Distribuição dos Custos (% da receita bruta)</h4>
+                <div class="bar-item">
+                    <div class="bar-head"><strong>Construção</strong><span id="p-const">—</span></div>
+                    <div class="bar-track"><div class="bar-fill b-const" id="bar-const" style="width:0%"></div></div>
+                </div>
+                <div class="bar-item">
+                    <div class="bar-head"><strong>Comissão</strong><span id="p-comm">—</span></div>
+                    <div class="bar-track"><div class="bar-fill b-comm" id="bar-comm" style="width:0%"></div></div>
+                </div>
+                <div class="bar-item">
+                    <div class="bar-head"><strong>Impostos</strong><span id="p-tax">—</span></div>
+                    <div class="bar-track"><div class="bar-fill b-tax" id="bar-tax" style="width:0%"></div></div>
+                </div>
+                <div class="bar-item">
+                    <div class="bar-head"><strong>Outorga</strong><span id="p-grant">—</span></div>
+                    <div class="bar-track"><div class="bar-fill b-grant" id="bar-grant" style="width:0%"></div></div>
+                </div>
+                <div class="bar-item">
+                    <div class="bar-head"><strong>Permuta (m² + R$)</strong><span id="p-permute">—</span></div>
+                    <div class="bar-track"><div class="bar-fill b-permute" id="bar-permute" style="width:0%"></div></div>
+                </div>
+                <div class="bar-item">
+                    <div class="bar-head"><strong>Lucro / Prejuízo</strong><span id="p-lucro">—</span></div>
+                    <div class="bar-track"><div class="bar-fill" id="bar-lucro" style="width:0%"></div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Final result -->
+        <div class="result-card neutral" id="resultCard">
+            <div class="result-label" id="resultLabel">Aguardando dados...</div>
+            <div class="result-value" id="resultValue">—</div>
+            <div class="result-margin" id="resultMargin">Preencha os campos ao lado</div>
+            <div class="result-roi" id="resultROI">ROI: —</div>
+        </div>
+
+    </section>
+</main>
+
+<footer>
+    Kósmos Empreendimentos · Estudo de Viabilidade Imobiliária<br>
+    Proporções baseadas no Projeto Jardim dos Eucaliptos (ARP 2.5 · Terreno 1.677 m²) · Florianópolis, 2026<br>
+    Este estudo não constitui garantia de aprovação. Valores sujeitos a alterações por exigências municipais, técnicas ou ambientais.
+</footer>
+
+<script>
+    // ── Coeficientes do PDF (terreno de referência) ──
+    const PDF = {
+        terrain: 1677, totalBuilt: 6650.52,
+        apartments: 56, coberturas: 3,
+        grant: 923990.63,
+        parkPilotis: 37, parkInter: 24, parkVisitor: 3,
+    };
+
+    const COEF = {
+        built:       PDF.totalBuilt  / PDF.terrain,   // 3.967 — fixo, vem do zoneamento
+        grant:       PDF.grant       / PDF.terrain,   // R$/m² de terreno
+        apts:        PDF.apartments  / PDF.terrain,
+        cob:         PDF.coberturas  / PDF.terrain,
+        parkPilotis: PDF.parkPilotis / PDF.terrain,
+        parkInter:   PDF.parkInter   / PDF.terrain,
+        parkVisitor: PDF.parkVisitor / PDF.terrain,
+    };
+    // Eficiência NÃO é fixada aqui — vem do input do usuário.
+
+    // ── Helpers ──
+    const brl = v => new Intl.NumberFormat('pt-BR', {
+        style: 'currency', currency: 'BRL',
+        minimumFractionDigits: 0, maximumFractionDigits: 0
+    }).format(v);
+
+    const num = (v, d = 2) => new Intl.NumberFormat('pt-BR', {
+        minimumFractionDigits: d, maximumFractionDigits: d
+    }).format(v);
+
+    const pct = v => num(v, 1) + '%';
+
+    const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+
+    const bar = (id, w) => {
+        const el = document.getElementById(id);
+        if (el) el.style.width = Math.min(Math.max(w, 0), 100) + '%';
+    };
+
+    // ── Tab switch ──
+    function switchTab(tab) {
+        document.querySelectorAll('.ptab').forEach((b, i) => {
+            b.classList.toggle('active', (i === 0 && tab === 'm2') || (i === 1 && tab === 'rs'));
+        });
+        document.getElementById('tab-m2').classList.toggle('show', tab === 'm2');
+        document.getElementById('tab-rs').classList.toggle('show', tab === 'rs');
+    }
+
+    // ── Cálculo principal ──
+    function calculate() {
+        const terrain    = parseFloat(document.getElementById('terrain').value)          || 0;
+        const efficiency = parseFloat(document.getElementById('efficiency').value)        || 57.4;
+        const cost       = parseFloat(document.getElementById('constructionCost').value) || 0;
+        const price      = parseFloat(document.getElementById('salePrice').value)        || 0;
+        const commPct    = parseFloat(document.getElementById('commission').value)        || 0;
+        const taxPct     = parseFloat(document.getElementById('taxes').value)             || 0;
+        const permuteM2  = parseFloat(document.getElementById('permuteM2').value)         || 0;
+        const permuteR   = parseFloat(document.getElementById('permuteR').value)          || 0;
+
+        if (terrain <= 0 || price <= 0) return;
+
+        // ── Físico ──
+        const totalBuilt  = terrain * COEF.built;
+        const privateArea = totalBuilt * (efficiency / 100);   // variável de eficiência
+        const sellable    = Math.max(0, privateArea - permuteM2);
+        const apts        = Math.max(1, Math.round(terrain * COEF.apts));
+        const cob         = Math.max(0, Math.round(terrain * COEF.cob));
+        const parkPilotis = Math.max(0, Math.round(terrain * COEF.parkPilotis));
+        const parkInter   = Math.max(0, Math.round(terrain * COEF.parkInter));
+        const parkVisitor = Math.max(0, Math.round(terrain * COEF.parkVisitor));
+        const totalParking = parkPilotis + parkInter + parkVisitor;
+        const grant       = terrain * COEF.grant;
+
+        // ── Financeiro ──
+        // Permuta m²: esses m² não geram receita mas custam para construir → custo = valor de mercado
+        const permuteM2Value = permuteM2 * price;
+
+        const revenue    = sellable   * price;
+        const constTotal = totalBuilt * cost;
+        const commAmt    = revenue    * commPct / 100;
+        const taxAmt     = revenue    * taxPct  / 100;
+        const totalCost  = constTotal + commAmt + taxAmt + grant + permuteM2Value + permuteR;
+        const profit     = revenue - totalCost;
+        const marginPct  = revenue > 0 ? (profit / revenue) * 100 : 0;
+        const roi        = totalCost > 0 ? (profit / totalCost) * 100 : 0;
+        const profitPerM2 = sellable > 0 ? profit / sellable : 0;
+
+        // ── Display: físico ──
+        set('r-totalBuilt', num(totalBuilt, 0));
+        set('r-ca', `CA ${num(COEF.built, 2)}× o terreno`);
+        set('r-private', num(privateArea, 0));
+        set('r-effSub', `Eficiência ${num(efficiency, 1)}%`);
+        set('r-apts', apts);
+        set('r-cob', `+ ${cob} coberturas`);
+        set('r-sellable', num(sellable, 0));
+        set('r-sellableSub', permuteM2 > 0
+            ? `${num(privateArea, 0)} m² − ${num(permuteM2, 0)} m² permuta`
+            : 'Total privativo disponível');
+        set('r-permuteM2', num(permuteM2, 0));
+        set('r-permuteR', permuteR > 0 ? `+ ${brl(permuteR)} em dinheiro` : 'Sem valor em R$');
+        set('r-parking', totalParking);
+        set('r-parkingSub', `${parkPilotis} pilotis · ${parkInter} inter · ${parkVisitor} visitante`);
+
+        // ── Display: financeiro ──
+        set('r-revenue', brl(revenue));
+        set('r-revenueSub', `${num(sellable, 0)} m² × ${brl(price)}/m²`);
+        set('r-construction', brl(constTotal));
+
+        // Métricas
+        set('m-margin', pct(marginPct));
+        set('m-roi', pct(roi));
+        set('m-ppm', brl(profitPerM2) + '/m²');
+
+        // Painel — resumo permuta
+        set('ps-m2', `${num(permuteM2, 0)} m²`);
+        set('ps-r', brl(permuteR));
+
+        // Breakdown
+        set('b-revenue',      brl(revenue));
+        set('b-construction', `- ${brl(constTotal)}`);
+        set('b-commission',   `- ${brl(commAmt)}`);
+        set('b-taxes',        `- ${brl(taxAmt)}`);
+        set('b-grant',        `- ${brl(grant)}`);
+        set('b-permuteM2',    permuteM2 > 0 ? `- ${brl(permuteM2Value)}` : '—');
+        set('b-permuteM2-label', permuteM2 > 0 ? `(${num(permuteM2, 0)} m² × ${brl(price)}/m²)` : '');
+        set('b-permuteR',     permuteR > 0 ? `- ${brl(permuteR)}` : '—');
+
+        const profitEl = document.getElementById('b-profit');
+        if (profitEl) {
+            profitEl.textContent = brl(profit);
+            profitEl.className   = profit >= 0 ? 'pos' : 'neg';
+        }
+
+        // Barras
+        const r = revenue || 1;
+        const permuteTotal = permuteM2Value + permuteR;
+
+        set('p-const',   pct(constTotal    / r * 100));
+        set('p-comm',    pct(commAmt       / r * 100));
+        set('p-tax',     pct(taxAmt        / r * 100));
+        set('p-grant',   pct(grant         / r * 100));
+        set('p-permute', pct(permuteTotal  / r * 100));
+        set('p-lucro',   pct(Math.abs(profit) / r * 100));
+
+        bar('bar-const',   constTotal    / r * 100);
+        bar('bar-comm',    commAmt       / r * 100);
+        bar('bar-tax',     taxAmt        / r * 100);
+        bar('bar-grant',   grant         / r * 100);
+        bar('bar-permute', permuteTotal  / r * 100);
+        bar('bar-lucro',   Math.abs(profit) / r * 100);
+
+        const barLucro = document.getElementById('bar-lucro');
+        if (barLucro) barLucro.className = `bar-fill ${profit >= 0 ? 'b-lucro' : 'b-loss'}`;
+
+        // Result card
+        const card = document.getElementById('resultCard');
+        card.className = 'result-card ' + (profit > 0 ? 'profit' : profit < 0 ? 'loss' : 'neutral');
+        set('resultLabel',  profit > 0 ? 'LUCRO ESTIMADO DO PROJETO' : 'PREJUÍZO ESTIMADO DO PROJETO');
+        set('resultValue',  (profit < 0 ? '- ' : '') + brl(Math.abs(profit)));
+        set('resultMargin', `Margem líquida sobre receita: ${pct(Math.abs(marginPct))}${profit < 0 ? ' (negativa)' : ''}`);
+        set('resultROI',    `ROI sobre custo total: ${pct(Math.abs(roi))}${profit < 0 ? ' (negativo)' : ''}`);
+
+        // ── FLUXO DE CAIXA ──
+        const prazo     = Math.max(1, parseInt(document.getElementById('prazo').value)     || 36);
+        const atoPct    = parseFloat(document.getElementById('atoPct').value)               || 0;
+        const parPct    = parseFloat(document.getElementById('parPct').value)               || 0;
+        const chavesPct = parseFloat(document.getElementById('chavesPct').value)            || 0;
+        const durantePct = atoPct + parPct + chavesPct;
+        const saldoPct   = Math.max(0, 100 - durantePct);
+
+        // Indicator no painel
+        const indEl = document.getElementById('cf-indicator');
+        set('ci-durante', pct(durantePct));
+        set('ci-saldo',   pct(saldoPct));
+        if (indEl) indEl.querySelector('#ci-durante').className = durantePct > 100 ? 'cf-warn' : '';
+
+        // Amounts
+        const atoAmt    = revenue * atoPct    / 100;
+        const parTotal  = revenue * parPct    / 100;
+        const parMensal = prazo > 0 ? parTotal / prazo : 0;
+        const chavesAmt = revenue * chavesPct / 100;
+        const saldoAmt  = revenue * saldoPct  / 100;
+        const constMens = prazo > 0 ? constTotal / prazo : constTotal;
+
+        // ── Timing da comissão: paga no mês em que recebimentos acumulados atingem 10% do VGV ──
+        const commThreshold = revenue * 0.10;
+        let commMonth = 0;
+        if (atoAmt < commThreshold && parMensal > 0) {
+            commMonth = Math.min(prazo, Math.ceil((commThreshold - atoAmt) / parMensal));
+        }
+
+        // ── Cashflow mensal (commission no mês correto, impostos na entrega) ──
+        const cashflows = [];
+        cashflows.push(atoAmt - grant - permuteR - constMens - (commMonth === 0 ? commAmt : 0));
+        for (let m = 1; m < prazo; m++) {
+            cashflows.push(parMensal - constMens - (commMonth === m ? commAmt : 0));
+        }
+        cashflows.push(parMensal + chavesAmt + saldoAmt - taxAmt - (commMonth >= prazo ? commAmt : 0));
+
+        // ── Capital necessário (pico de caixa negativo) ──
+        let cumul = 0, minCumul = 0;
+        cashflows.forEach(cf => { cumul += cf; if (cumul < minCumul) minCumul = cumul; });
+
+        const capitalNecessario = Math.abs(Math.min(0, minCumul));
+
+        // ── Display cashflow ──
+        set('cf-badge',   `${prazo} meses de obra`);
+        set('cf-capital', brl(capitalNecessario));
+
+        // Fase início
+        const commM0  = commMonth === 0 ? commAmt : 0;
+        const netM0   = atoAmt - grant - permuteR - constMens - commM0;
+        set('cf-ato',       `+${brl(atoAmt)}`);
+        set('cf-grant-out', `-${brl(grant)}`);
+        set('cf-perm-out',  permuteR > 0 ? `-${brl(permuteR)}` : '—');
+        set('cf-const1',    `-${brl(constMens)}`);
+        const net0El = document.getElementById('cf-net0');
+        if (net0El) { net0El.textContent = brl(netM0); net0El.style.color = netM0 >= 0 ? 'var(--green)' : 'var(--red)'; }
+
+        // Fase obra — líquido médio (sem o mês pontual da comissão para não distorcer)
+        const netObra = parMensal - constMens;
+        const commDuringObra = commMonth > 0 && commMonth < prazo;
+        set('cf-months-label', `Meses 1–${prazo - 1}`);
+        set('cf-par-in',    `+${brl(parMensal)}/mês`);
+        set('cf-const-out', `-${brl(constMens)}/mês${commDuringObra ? ` · comissão no mês ${commMonth}` : ''}`);
+        const netObraEl = document.getElementById('cf-net-obra');
+        if (netObraEl) { netObraEl.textContent = brl(netObra) + '/mês*'; netObraEl.style.color = netObra >= 0 ? 'var(--green)' : 'var(--red)'; }
+
+        // Fase entrega
+        const commEntrega  = commMonth >= prazo ? commAmt : 0;
+        const netEntrega   = parMensal + chavesAmt + saldoAmt - taxAmt - commEntrega;
+        const deducoesLabel = commEntrega > 0 ? `-${brl(commEntrega + taxAmt)}` : `-${brl(taxAmt)}`;
+        set('cf-month-entrega', `Mês ${prazo}`);
+        set('cf-par-final',    `+${brl(parMensal)}`);
+        set('cf-chaves-in',    `+${brl(chavesAmt)}`);
+        set('cf-saldo-in',     `+${brl(saldoAmt)}`);
+        set('cf-deducoes',     deducoesLabel);
+        const netEntEl = document.getElementById('cf-net-entrega');
+        if (netEntEl) { netEntEl.textContent = brl(netEntrega); netEntEl.style.color = netEntrega >= 0 ? 'var(--green)' : 'var(--red)'; }
+
+        // VGV bar
+        const total = durantePct + saldoPct || 100;
+        const w = v => (v / total * 100).toFixed(1) + '%';
+        const bw = (id, v) => { const el = document.getElementById(id); if (el) el.style.width = w(v); };
+        bw('bar-cf-ato',    atoPct);
+        bw('bar-cf-par',    parPct);
+        bw('bar-cf-chaves', chavesPct);
+        bw('bar-cf-saldo',  saldoPct);
+
+        set('l-ato',    pct(atoPct));
+        set('l-par',    pct(parPct));
+        set('l-chaves', pct(chavesPct));
+        set('l-saldo',  pct(saldoPct));
+
+        const tirMes = calcIRR(cashflows);
+        const tirMensalEl = document.getElementById('cf-tir-mensal');
+        const tirAnualEl  = document.getElementById('cf-tir-anual');
+
+        if (tirMes !== null) {
+            const tirAnual = (Math.pow(1 + tirMes, 12) - 1) * 100;
+            if (tirMensalEl) { tirMensalEl.textContent = pct(tirMes * 100); tirMensalEl.className = 'tir-val'; }
+            if (tirAnualEl)  { tirAnualEl.textContent  = pct(tirAnual);     tirAnualEl.className  = 'tir-val'; }
+        } else {
+            if (tirMensalEl) { tirMensalEl.textContent = 'N/A'; tirMensalEl.className = 'tir-val invalid'; }
+            if (tirAnualEl)  { tirAnualEl.textContent  = 'N/A'; tirAnualEl.className  = 'tir-val invalid'; }
+        }
+    }
+
+    // ── IRR (Newton-Raphson) ──
+    function calcIRR(cf) {
+        const hasPos = cf.some(v => v > 0);
+        const hasNeg = cf.some(v => v < 0);
+        if (!hasPos || !hasNeg) return null;
+
+        const npv  = r => cf.reduce((s, v, t) => s + v / Math.pow(1 + r, t), 0);
+        const dnpv = r => cf.reduce((s, v, t) => s - t * v / Math.pow(1 + r, t + 1), 0);
+
+        let r = 0.01;
+        for (let i = 0; i < 300; i++) {
+            const d = dnpv(r);
+            if (Math.abs(d) < 1e-12) break;
+            const rNew = r - npv(r) / d;
+            if (Math.abs(rNew - r) < 1e-10) { r = rNew; break; }
+            r = Math.max(-0.9999, Math.min(rNew, 10));
+        }
+        return isFinite(r) && r > -1 ? r : null;
+    }
+
+    document.querySelectorAll('input').forEach(inp => inp.addEventListener('input', calculate));
+    calculate();
+</script>
+</body>
+</html>
