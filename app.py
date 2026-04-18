@@ -93,7 +93,7 @@ def _wms_query(bbox, layer):
             "SRS": "EPSG:4326", "X": 50, "Y": 50,
             "INFO_FORMAT": "application/json", "FEATURE_COUNT": 1,
         },
-        timeout=15,
+        timeout=30,
     ).json()
 
 @app.route("/api/zona")
@@ -126,7 +126,7 @@ def get_zona():
     try:
         wms_zona = _wms_query(bbox, "Geoportal:gvw_zonas")
     except Exception as e:
-        return jsonify({"error": f"Erro ao consultar GeoFloripa: {str(e)}"}), 502
+        return jsonify({"error": "Não foi possível conectar ao GeoFloripa (servidor da Prefeitura de Florianópolis). O serviço pode estar instável no momento — aguarde alguns instantes e tente novamente."}), 502
 
     features = wms_zona.get("features", [])
     if not features:
