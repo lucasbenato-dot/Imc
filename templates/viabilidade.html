@@ -24,14 +24,14 @@
         }
 
         .topbar {
-            background: var(--accent);
-            color: white;
+            background: var(--navy);
+            color: rgba(255,255,255,0.75);
             text-align: center;
-            font-size: 11px;
+            font-size: 30px;
             font-weight: 600;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            padding: 7px 40px;
+            letter-spacing: 1px;
+            padding: 10px 40px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
         }
 
         body {
@@ -241,6 +241,159 @@
         .ref-row span:last-child  { font-weight: 600; color: rgba(255,255,255,0.8); }
 
         .note { font-size: 10px; color: rgba(255,255,255,0.25); margin-top: 14px; line-height: 1.6; }
+
+        /* ── ZONA SELECTOR ── */
+        .area-calc-box {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px; padding: 10px 12px; margin-top: -6px; margin-bottom: 14px;
+        }
+        .area-calc-row {
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 12px; padding: 3px 0;
+        }
+        .area-calc-row span:first-child { color: rgba(255,255,255,0.45); }
+        .area-calc-row strong { color: white; font-size: 14px; }
+        .afasta-row { border-top: 1px solid rgba(255,255,255,0.06); margin-top: 5px; padding-top: 5px; font-size: 11px; }
+        .afasta-row span:last-child { color: rgba(255,255,255,0.6); text-align: right; max-width: 55%; }
+
+        /* ── AUTOCOMPLETE ── */
+        .addr-wrapper { position: relative; }
+        .addr-row { display: flex; gap: 8px; align-items: center; }
+        .autocomplete-list {
+            position: absolute; top: calc(100% + 4px); left: 0; right: 0; z-index: 200;
+            background: #1a3460; border: 1px solid rgba(99,160,255,0.35);
+            border-radius: 8px; overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+        }
+        .autocomplete-item {
+            padding: 10px 14px; font-size: 12px; cursor: pointer;
+            color: rgba(255,255,255,0.8); border-bottom: 1px solid rgba(255,255,255,0.06);
+            transition: background 0.15s;
+        }
+        .autocomplete-item:last-child { border-bottom: none; }
+        .autocomplete-item:hover, .autocomplete-item.active { background: rgba(37,99,235,0.4); color: white; }
+        .autocomplete-item strong { color: #93c5fd; }
+        .autocomplete-loading { padding: 10px 14px; font-size: 11px; color: rgba(255,255,255,0.3); }
+
+        /* ── RESUMO DE PAVIMENTOS ── */
+        .pav-resumo {
+            background: rgba(15,31,61,0.8);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px; padding: 14px 16px; margin-top: 14px;
+        }
+        .pav-resumo h4 {
+            font-size: 9px; text-transform: uppercase; letter-spacing: 2px;
+            color: rgba(255,255,255,0.3); margin-bottom: 10px; font-weight: 700;
+        }
+        .pav-row {
+            display: flex; justify-content: space-between; align-items: flex-start;
+            padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 12px;
+        }
+        .pav-row:last-child { border-bottom: none; }
+        .pav-row > span:first-child { color: rgba(255,255,255,0.5); padding-top: 2px; }
+        .pav-num-wrap { text-align: right; }
+        .pav-num {
+            font-size: 18px; font-weight: 800; line-height: 1; display: block;
+        }
+        .pav-fisico {
+            font-size: 9px; font-weight: 500; opacity: 0.55; margin-top: 3px;
+            letter-spacing: 0.3px; display: block;
+        }
+        .pav-num.base  { color: rgba(255,255,255,0.75); }
+        .pav-num.adi   { color: #fbbf24; }
+        .pav-num.misto { color: #6ee7b7; }
+        .addr-row .input-wrap { flex: 1; }
+
+        .btn-consultar {
+            flex-shrink: 0;
+            width: 40px; height: 40px;
+            background: rgba(37,99,235,0.25);
+            border: 1px solid rgba(37,99,235,0.4);
+            border-radius: 8px; color: #93c5fd;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            transition: background 0.2s;
+        }
+        .btn-consultar:hover { background: rgba(37,99,235,0.45); }
+        .btn-consultar.loading { opacity: 0.5; pointer-events: none; animation: pulse 1s infinite; }
+        @keyframes pulse { 0%,100%{opacity:.5} 50%{opacity:.9} }
+
+        .endereco-status {
+            margin-top: 6px; padding: 7px 10px; border-radius: 7px;
+            font-size: 11px; line-height: 1.5;
+        }
+        .endereco-status.ok  { background: rgba(5,150,105,0.15); border: 1px solid rgba(5,150,105,0.3); color: #6ee7b7; }
+        .endereco-status.err { background: rgba(220,38,38,0.15);  border: 1px solid rgba(220,38,38,0.3);  color: #fca5a5; }
+        .endereco-status.loading { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.4); }
+
+        .zona-select-wrap select {
+            width: 100%; padding: 11px 12px;
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 8px; color: white; font-size: 13px;
+            font-weight: 600; outline: none; cursor: pointer;
+            appearance: none; -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23ffffff66' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+            background-repeat: no-repeat; background-position: right 12px center;
+            transition: border-color 0.2s, background 0.2s;
+        }
+        .zona-select-wrap select:focus { border-color: rgba(99,160,255,0.5); background-color: rgba(255,255,255,0.12); }
+        .zona-select-wrap select option { background: #1a3460; color: white; }
+
+        .input-wrap.addr input { padding-left: 12px; font-size: 13px; font-weight: 500; }
+
+        .zona-params {
+            background: rgba(37,99,235,0.12);
+            border: 1px solid rgba(37,99,235,0.3);
+            border-radius: 10px; padding: 12px 14px;
+            margin-top: 8px;
+        }
+        .zona-params h4 {
+            font-size: 9px; text-transform: uppercase; letter-spacing: 2px;
+            color: rgba(255,255,255,0.35); margin-bottom: 10px; font-weight: 700;
+        }
+        .zp-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 6px 10px;
+        }
+        .zp-item { font-size: 11px; }
+        .zp-item span:first-child { color: rgba(255,255,255,0.45); display: block; font-size: 9px; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 1px; }
+        .zp-item span:last-child  { color: #93c5fd; font-weight: 700; font-size: 13px; }
+        .zp-warn {
+            margin-top: 8px; padding: 6px 8px;
+            background: rgba(234,88,12,0.15);
+            border: 1px solid rgba(234,88,12,0.3);
+            border-radius: 6px; font-size: 10px; color: #fed7aa; line-height: 1.5;
+        }
+
+        /* ── POTENCIAL CARD ── */
+        .potencial-card {
+            background: linear-gradient(135deg, #0f1f3d 0%, #1e3a6e 100%);
+            border: 1px solid rgba(37,99,235,0.35);
+            border-radius: 14px; padding: 20px 24px;
+            margin-bottom: 20px;
+        }
+        .potencial-card h3 {
+            font-size: 11px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 2px; color: #93c5fd; margin-bottom: 16px;
+        }
+        .pot-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+        }
+        .pot-item { text-align: center; }
+        .pot-val { font-size: 22px; font-weight: 800; color: white; }
+        .pot-unit { font-size: 11px; color: rgba(255,255,255,0.45); margin-top: 1px; }
+        .pot-lbl { font-size: 10px; color: rgba(255,255,255,0.4); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .pot-divider { width: 1px; background: rgba(255,255,255,0.08); margin: 0 4px; }
+        .pot-note {
+            margin-top: 14px; padding-top: 12px;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            font-size: 10px; color: rgba(255,255,255,0.35); line-height: 1.6;
+        }
+        .pot-note strong { color: rgba(255,255,255,0.6); }
+        .pot-empty {
+            text-align: center; padding: 20px;
+            color: rgba(255,255,255,0.2); font-size: 13px;
+        }
 
         /* ── RESULTS PANEL ── */
         .results-panel { padding: 32px; overflow-y: auto; }
@@ -619,12 +772,11 @@
             .input-panel { position: static; height: auto; }
             .grid-3 { grid-template-columns: repeat(2, 1fr); }
             .metrics { grid-template-columns: repeat(2, 1fr); }
+            .pot-grid { grid-template-columns: repeat(2, 1fr); }
         }
     </style>
 </head>
 <body>
-
-<div class="topbar">Base no Plano Diretor Vigente 2023</div>
 
 <header>
     <div class="header-left">
@@ -642,15 +794,108 @@
     <aside class="input-panel">
         <div class="panel-title">Parâmetros do Projeto</div>
 
+        <!-- ── ENDEREÇO E METRAGEM ── -->
         <div class="section-label">Terreno</div>
 
         <div class="input-group">
-            <label>Área do Terreno <em>m²</em></label>
-            <div class="input-wrap">
-                <span class="prefix">m²</span>
-                <input type="number" id="terrain" value="1670" min="100" step="10" placeholder="1670">
+            <label>Endereço do Terreno <em>digite para sugestões</em></label>
+            <div class="addr-wrapper">
+                <div class="addr-row">
+                    <div class="input-wrap addr">
+                        <input type="text" id="endereco" placeholder="Ex: Jardim dos Eucaliptos…"
+                               value="Rua Jardim dos Eucaliptos, Campeche 1016"
+                               autocomplete="off"
+                               oninput="onEnderecoInput()"
+                               onkeydown="onEnderecoKey(event)">
+                    </div>
+                    <button class="btn-consultar" id="btn-consultar" onclick="consultarZona()" title="Identificar zona automaticamente">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                    </button>
+                </div>
+                <div id="autocomplete-list" style="display:none"></div>
+            </div>
+            <div id="endereco-status" class="endereco-status" style="display:none"></div>
+        </div>
+
+        <!-- Resumo de pavimentos (aparece após consulta) -->
+        <div class="pav-resumo" id="pav-resumo" style="display:none">
+            <h4>Resumo — Potencial de Pavimentos</h4>
+            <div class="pav-row">
+                <span>Padrão (F01)</span>
+                <div class="pav-num-wrap">
+                    <span class="pav-num base" id="pr-base">—</span>
+                    <span class="pav-fisico" id="pr-base-fisico"></span>
+                </div>
+            </div>
+            <div class="pav-row" id="pr-misto-row" style="display:none">
+                <span>+ Uso misto (+1)</span>
+                <div class="pav-num-wrap">
+                    <span class="pav-num misto" id="pr-misto">—</span>
+                    <span class="pav-fisico" id="pr-misto-fisico"></span>
+                </div>
+            </div>
+            <div class="pav-row" id="pr-adi-row" style="display:none">
+                <span id="pr-adi-label">+ ADI (+1)</span>
+                <div class="pav-num-wrap">
+                    <span class="pav-num adi" id="pr-adi">—</span>
+                    <span class="pav-fisico" id="pr-adi-fisico"></span>
+                </div>
             </div>
         </div>
+
+        <div class="input-group">
+            <label>Testada — frente para a rua <em>m</em></label>
+            <div class="input-wrap">
+                <span class="prefix">m</span>
+                <input type="number" id="testada" min="1" step="0.5" placeholder="Ex: 20"
+                       value="38" oninput="calcArea()">
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label>Lateral — profundidade do lote <em>m</em></label>
+            <div class="input-wrap">
+                <span class="prefix">m</span>
+                <input type="number" id="lateral" min="1" step="0.5" placeholder="Ex: 40"
+                       value="44" oninput="calcArea()">
+            </div>
+        </div>
+
+        <div class="area-calc-box" id="area-calc-box" style="display:none">
+            <div class="area-calc-row">
+                <span>Área total do terreno</span>
+                <strong id="area-calc-val">—</strong>
+            </div>
+            <div class="area-calc-row afasta-row" id="afasta-info" style="display:none">
+                <span>Afastamentos estimados</span>
+                <span id="afasta-val">—</span>
+            </div>
+            <div class="area-calc-row" id="area-util-row" style="display:none">
+                <span>Projeção útil estimada</span>
+                <strong id="area-util-val" style="color:#6ee7b7">—</strong>
+            </div>
+        </div>
+        <!-- campo oculto terrain usado pelo restante do JS -->
+        <input type="hidden" id="terrain" value="0">
+
+        <div class="zona-params" id="zona-params" style="display:none">
+            <h4>Zoneamento Identificado — Plano Diretor 2023</h4>
+            <div style="font-size:13px;font-weight:700;color:#93c5fd;margin-bottom:10px" id="zp-nome-grande">—</div>
+            <div class="zp-grid">
+                <div class="zp-item"><span>CA Básico</span><span id="zp-cabasico">—</span></div>
+                <div class="zp-item"><span>CA Máx c/ OODC</span><span id="zp-camax">—</span></div>
+                <div class="zp-item"><span>Taxa de Ocupação</span><span id="zp-to">—</span></div>
+                <div class="zp-item"><span>Pavimentos (padrão)</span><span id="zp-pav">—</span></div>
+                <div class="zp-item"><span>Alt. Fachada (máx)</span><span id="zp-altf">—</span></div>
+                <div class="zp-item"><span>Alt. Cumeeira (máx)</span><span id="zp-altc">—</span></div>
+                <div class="zp-item"><span>Lote Mínimo</span><span id="zp-lote">—</span></div>
+                <div class="zp-item"><span>Testada Mínima</span><span id="zp-test">—</span></div>
+            </div>
+            <div class="zp-warn" id="zp-warn" style="display:none"></div>
+        </div>
+
+        <!-- campo oculto para zona atual (usado internamente) -->
+        <input type="hidden" id="zona" value="">
 
         <div class="input-group">
             <label>
@@ -715,7 +960,7 @@
                     <label>m² privativos entregues ao proprietário <em>m²</em></label>
                     <div class="input-wrap">
                         <span class="prefix">m²</span>
-                        <input type="number" id="permuteM2" value="0" min="0" step="5" placeholder="0">
+                        <input type="number" id="permuteM2" value="570" min="0" step="5" placeholder="0">
                     </div>
                 </div>
             </div>
@@ -725,7 +970,7 @@
                     <label>Valor em R$ pago pelo terreno <em>R$</em></label>
                     <div class="input-wrap">
                         <span class="prefix">R$</span>
-                        <input type="number" id="permuteR" value="0" min="0" step="10000" placeholder="0">
+                        <input type="number" id="permuteR" value="4000000" min="0" step="10000" placeholder="0">
                     </div>
                 </div>
             </div>
@@ -782,6 +1027,14 @@
     <!-- ── RESULTS PANEL ── -->
     <section class="results-panel">
         <div class="results-title">Resultado da Análise</div>
+
+        <!-- ── POTENCIAL CONSTRUTIVO ── -->
+        <div class="potencial-card" id="potencial-card">
+            <h3>Potencial Construtivo Máximo — <span id="pot-zona-nome">Selecione a zona</span></h3>
+            <div id="pot-body">
+                <div class="pot-empty">Selecione a zona no painel ao lado para calcular o potencial máximo do terreno conforme o Plano Diretor 2023.</div>
+            </div>
+        </div>
 
         <!-- Projeto físico – linha 1 -->
         <div class="grid-3">
@@ -1095,6 +1348,452 @@
 </footer>
 
 <script>
+    // ── Banco de dados F01 — Tabela de Limites de Ocupação (LC 482/2014 rev. LC 739/2023) ──
+    // Campos: [pavPadrao, pavTDC, toMax(%), tiMax(%), altFachada(m), altCumeeira(m),
+    //          caMin, caBasico, caOODC, caTDC, caSubsolo, caMax, loteMin(m²), testadaMin(m), densLiq(hab/ha)]
+    const ZONAS_DB = {
+      'ARP 2.3': [2,0,30,50,10.5,13,  0.2,1,0,0,    0.3,1.3,  360,12,70],
+      'ARP 2.4': [2,0,40,60,10.5,13,  0.2,1,0,0,    0.4,1.4,  360,12,70],
+      'ARP 2.5': [2,0,50,70,10.5,13,  0.2,1,0.6,0,  0.8,2.4,  200,10,110],
+      'ARP 3.5': [3,0,50,70,13.5,17.5,0.2,1,1.25,0, 0.8,3.05, 360,12,340],
+      'ARP 4.4': [4,0,40,60,17,22,    0.2,1,1.64,0, 0.8,3.44, 450,15,380],
+      'ARP 4.5': [4,0,50,70,17,22,    0.2,1,1.9,0,  0.8,3.7,  450,15,420],
+      'ARP 5.5': [5,0,50,70,20.5,26.5,0.2,1,2.55,0, 0.8,4.35, 450,15,490],
+      'ARP 6.5': [6,0,50,70,23.5,29.5,0.2,1,2.41,0, 0.8,4.21, 600,15,570],
+      'ARP 8.5': [6,2,50,80,31,36,    0.2,1,2.38,0.83,0.8,5.01,750,18,630],
+      'ARP 10.5':[8,2,50,80,38,44,    0.2,1,3.21,0.78,0.8,5.79,750,18,750],
+      'ARP 12.5':[10,2,50,70,46,52,   0.2,1,3.98,0.72,0.8,6.5, 900,22,850],
+
+      'ARM 2.4': [2,0,40,60,10.5,13,  0.25,1,0,0,   0.4,1.4,  360,12,210],
+      'ARM 2.5': [2,0,50,70,10.5,13,  0.25,1,0.6,0, 0.8,2.4,  360,12,210],
+      'ARM 3.4': [3,0,40,60,13.5,17.5,0.25,1,1.12,0,0.8,2.92, 450,15,300],
+      'ARM 3.5': [3,0,50,70,13.5,17.5,0.25,1,1.25,0,0.8,3.05, 450,15,300],
+      'ARM 4.5': [4,0,50,70,17,22,    0.25,1,1.9,0, 0.8,3.7,  450,15,370],
+      'ARM 5.5': [5,0,50,70,20.5,26.5,0.25,1,2.55,0,0.8,4.35, 450,15,430],
+      'ARM 6.5': [5,1,50,70,23.5,29.5,0.25,1,1.97,0.44,0.8,4.21,600,15,660],
+      'ARM 8.5': [6,2,50,80,31,36,    0.25,1,2.38,0.83,0.8,5.01,750,18,720],
+      'ARM 10.5':[8,2,50,80,38,44,    0.25,1,3.21,0.78,0.8,5.79,750,18,830],
+      'ARM 12.5':[10,2,50,70,46,52,   0.25,1,3.98,0.72,0.8,6.5, 900,22,910],
+      'ARM 14.5':[11,3,50,70,53,59,   0.25,1,4.34,1.01,0.8,7.15,900,22,910],
+      'ARM 16.5':[12,4,50,70,61,67,   0.25,1,4.7,1.29, 0.8,7.79,900,22,910],
+
+      'AMC 2.5': [2,0,50,70,10.5,13,  1,1,1,0,    1,3,    360,12,190],
+      'AMC 3.5': [3,0,50,70,13.5,17.5,1,1,1.65,0, 1,3.65, 450,12,300],
+      'AMC 4.5': [4,0,50,70,17,22,    1,1,2.3,0,  1,4.3,  450,15,370],
+      'AMC 5.5': [5,0,50,70,20.5,26.5,1,1,2.95,0, 1,4.95, 450,15,430],
+      'AMC 6.5': [6,0,50,70,23.5,29.5,1,1,2.81,0, 1,4.81, 600,15,660],
+      'AMC 8.5': [6,2,50,70,31,36,    1,1,2.78,0.83,1,5.61,750,18,720],
+      'AMC 10.5':[8,2,50,70,38,44,    1,1,3.61,0.78,1,6.39,750,18,830],
+      'AMC 12.5':[10,2,50,70,46,52,   1,1,4.38,0.73,1,7.11,750,22,910],
+      'AMC 14.5':[11,3,50,70,53,59,   1,1,4.74,1.01,1,7.75,900,22,950],
+      'AMC 16.5':[12,4,50,70,61,67,   1,1,5.1,1.29, 1,8.39,1050,30,1020],
+
+      'AMS 2.5': [2,0,50,70,10.5,13,  0.5,1,1,0,   0.8,2.8,  360,12,130],
+      'AMS 3.5': [3,0,50,70,13.5,17.5,0.5,1,1.58,0,0.8,3.38, 450,15,210],
+      'AMS 4.5': [4,0,50,70,17,22,    0.5,1,2.23,0,0.8,4.3,  600,15,260],
+      'AMS 5.5': [5,0,50,70,20.5,26.5,0.5,1,2.88,0,0.8,4.68, 600,15,310],
+      'AMS 6.5': [6,0,50,70,23.5,29.5,0.5,1,2.41,0,0.8,4.21, 750,20,470],
+      'AMS 8.5': [6,2,50,80,31,36,    0.5,1,2.38,0.83,0.8,5.01,900,20,510],
+      'AMS 10.5':[8,2,50,80,38,44,    0.5,1,3.21,0.78,0.8,5.79,900,25,590],
+      'AMS 12.5':[10,2,50,80,46,52,   0.5,1,3.98,0.72,0.8,6.5, 900,25,650],
+      'AMS 14.5':[11,3,50,80,53,59,   0.5,1,4.34,1.02,0.8,7.16,900,25,710],
+      'AMS 16.5':[12,4,50,80,61,67,   0.5,1,4.7,1.28, 0.8,7.78,1050,30,800],
+
+      'ATR 2.5': [2,0,50,70,10.5,13,  0.25,1,0.6,0,  0.8,2.4, 360,12,210],
+      'ATR 3.4': [3,0,40,60,13.5,17.5,0.25,1,1.12,0, 0.8,2.92,360,12,340],
+      'ATR 3.5': [3,0,50,70,13.5,17.5,0.25,1,1.25,0, 0.8,3.05,360,12,340],
+      'ATR 4.5': [4,0,50,70,17,22,    0.25,1,1.9,0,  0.8,3.7, 450,15,410],
+      'ATR 5.5': [5,0,50,70,20.5,26.5,0.25,1,2.55,0, 0.8,4.35,450,15,490],
+      'ATR 6.5': [5,1,50,70,23.5,29.5,0.25,1,1.97,0.44,0.8,4.21,600,15,560],
+
+      'ATL 2.5': [2,0,50,70,10.5,13,  0,1,0,0,    0.5,1.5, 360,12,210],
+      'ATL 6.5': [5,1,50,70,23.5,29.5,0,1,1.67,0.44,0.65,3.76,600,15,400],
+
+      'ARC 2.5': [2,0,50,70,10.5,13,  0.2,1,0,0, 0,1, 40,4,70],
+      'ZEIS':    [4,0,60,80,17,22,    1,1,1.34,0,0,2.34,40,4,800],
+      'ARR':     [2,0,20,30,10.5,13,  0,0.3,0,0, 0,0.3,5000,50,20],
+      'APL':     [2,0,15,20,10.5,13,  0,0.2,0,0, 0,0.2,null,null,15],
+    };
+
+    // ── Avisos especiais por zona ──
+    const ZONA_WARNS = {
+      'ARP 8.5':  'Acréscimo de pavimentos via TDC condiciona-se a acesso por via local ou ampliação de recuos (obs. *1 F01).',
+      'ARM 6.5':  'Acréscimo de pavimentos via TDC condiciona-se a acesso por via local ou ampliação de recuos (obs. *1 F01).',
+      'ATR 6.5':  'Acréscimo de pavimentos via TDC condiciona-se a acesso por via local ou ampliação de recuos (obs. *1 F01).',
+      'ARR':      'Área Rural Residencial: sujeita a restrições rurais. Confirme inexistência de APP no terreno.',
+      'APL':      'Área de Preservação com Uso Limitado: edificação muito restrita. Consulte técnico habilitado.',
+      'ZEIS':     'Zona Especial de Interesse Social: sujeita a regras específicas de HIS/HMP. Consulte a PMF.',
+    };
+
+    // ── AUTOCOMPLETE DE ENDEREÇO (Nominatim) ──
+    let _acDebounce = null;
+    let _acIndex = -1;
+    let _acItems = [];
+
+    function onEnderecoInput() {
+        const q = document.getElementById('endereco').value.trim();
+        clearTimeout(_acDebounce);
+        if (q.length < 3) { hideAC(); return; }
+        _acDebounce = setTimeout(() => fetchSuggestions(q), 320);
+    }
+
+    function onEnderecoKey(e) {
+        const list = document.getElementById('autocomplete-list');
+        if (list.style.display === 'none') {
+            if (e.key === 'Enter') { e.preventDefault(); consultarZona(); }
+            return;
+        }
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            _acIndex = Math.min(_acIndex + 1, _acItems.length - 1);
+            highlightAC();
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            _acIndex = Math.max(_acIndex - 1, -1);
+            highlightAC();
+        } else if (e.key === 'Enter') {
+            e.preventDefault();
+            if (_acIndex >= 0 && _acItems[_acIndex]) selectAC(_acIndex);
+            else { hideAC(); consultarZona(); }
+        } else if (e.key === 'Escape') {
+            hideAC();
+        }
+    }
+
+    async function fetchSuggestions(q) {
+        const listEl = document.getElementById('autocomplete-list');
+        listEl.innerHTML = '<div class="autocomplete-loading">Buscando…</div>';
+        listEl.style.display = 'block';
+        try {
+            const res = await fetch(
+                `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q + ' Florianópolis SC')}&format=json&limit=6&addressdetails=1`,
+                { headers: { 'Accept-Language': 'pt-BR' } }
+            );
+            const data = await res.json();
+            _acItems = data;
+            _acIndex = -1;
+            if (!data.length) { listEl.innerHTML = '<div class="autocomplete-loading">Nenhum resultado</div>'; return; }
+            listEl.innerHTML = data.map((item, i) => {
+                const parts = item.display_name.split(', ');
+                const main  = parts.slice(0, 2).join(', ');
+                const rest  = parts.slice(2, 5).join(', ');
+                return `<div class="autocomplete-item" data-i="${i}" onmousedown="selectAC(${i})">
+                    <strong>${main}</strong>${rest ? `<br><span style="font-size:10px;opacity:.55">${rest}</span>` : ''}
+                </div>`;
+            }).join('');
+        } catch { listEl.innerHTML = '<div class="autocomplete-loading">Erro ao buscar</div>'; }
+    }
+
+    function highlightAC() {
+        document.querySelectorAll('.autocomplete-item').forEach((el, i) => {
+            el.classList.toggle('active', i === _acIndex);
+        });
+    }
+
+    function selectAC(i) {
+        const item = _acItems[i];
+        if (!item) return;
+        // Usa rua + número + bairro como texto do input
+        const a = item.address || {};
+        const parts = [a.road, a.house_number, a.suburb || a.neighbourhood || a.city_district].filter(Boolean);
+        document.getElementById('endereco').value = parts.length ? parts.join(', ') : item.display_name.split(', ').slice(0,3).join(', ');
+        hideAC();
+        consultarZona();
+    }
+
+    function hideAC() {
+        const el = document.getElementById('autocomplete-list');
+        if (el) { el.style.display = 'none'; el.innerHTML = ''; }
+        _acItems = []; _acIndex = -1;
+    }
+
+    // Fecha ao clicar fora
+    document.addEventListener('click', e => {
+        if (!e.target.closest('.addr-wrapper')) hideAC();
+    });
+
+    function buildFisico(pavTipo) {
+        return `Térreo + Pilotis + ${pavTipo} tipo${pavTipo > 1 ? 's' : ''} + Cobertura`;
+    }
+
+    function setPavRow(numId, fisicoId, pavCount) {
+        document.getElementById(numId).textContent = pavCount + ' pav tipo';
+        document.getElementById(fisicoId).textContent = buildFisico(pavCount);
+    }
+
+    function updatePavResumo(data) {
+        const el = document.getElementById('pav-resumo');
+        if (!data || !data.params) { el.style.display = 'none'; return; }
+
+        const pavBase    = parseInt(data.params.pavimentos_padrao) || 0;
+        const pavAdiExtra = data.pav_adicional_adi || 0;
+        const zonaBase   = (data.zona || '').split(' ')[0];
+        const temADI     = data.adi && pavAdiExtra > 0;
+        const temMisto   = ZONAS_USO_MISTO.has(zonaBase);
+
+        // Linha 1: padrão F01
+        setPavRow('pr-base', 'pr-base-fisico', pavBase);
+
+        // Linha 2: uso misto (+1 sobre o padrão)
+        const mistoRow = document.getElementById('pr-misto-row');
+        const pavComMisto = pavBase + 1;
+        if (temMisto) {
+            mistoRow.style.display = 'flex';
+            setPavRow('pr-misto', 'pr-misto-fisico', pavComMisto);
+        } else {
+            mistoRow.style.display = 'none';
+        }
+
+        // Linha 3: ADI (+1 sobre misto, ou sobre base se sem misto)
+        const adiRow = document.getElementById('pr-adi-row');
+        if (temADI) {
+            adiRow.style.display = 'flex';
+            document.getElementById('pr-adi-label').textContent =
+                `+ ${data.adi.tipo} (${data.adi.hierarquia})`;
+            const pavComADI = (temMisto ? pavComMisto : pavBase) + pavAdiExtra;
+            setPavRow('pr-adi', 'pr-adi-fisico', pavComADI);
+        } else {
+            adiRow.style.display = 'none';
+        }
+
+        el.style.display = 'block';
+    }
+
+    // ── Zonas elegíveis ao incentivo de uso misto (Dec. 25.647/2023)
+    const ZONAS_USO_MISTO = new Set(['ARM','ATR','AMC','AMS','ATL','ARP','ZEIS']);
+
+    function calcAfastamentos(pavimentos, altFachada) {
+        const h = altFachada || (pavimentos * 3.0);
+        const lat = h <= 9.5 ? 1.5 : Math.max(3.0, h / 7);
+        const fundos = lat;
+        const frontal = 4.0; // padrão via local — varia conforme hierarquia
+        return { frontal, lat, fundos };
+    }
+
+    function calcArea() {
+        const t = parseFloat(document.getElementById('testada').value) || 0;
+        const l = parseFloat(document.getElementById('lateral').value) || 0;
+        const area = t * l;
+
+        const box    = document.getElementById('area-calc-box');
+        const valEl  = document.getElementById('area-calc-val');
+        const afEl   = document.getElementById('afasta-info');
+        const afVal  = document.getElementById('afasta-val');
+        const utilRow = document.getElementById('area-util-row');
+        const utilVal = document.getElementById('area-util-val');
+
+        if (t > 0 && l > 0) {
+            box.style.display = 'block';
+            valEl.textContent = num(area, 0) + ' m²';
+            document.getElementById('terrain').value = area.toFixed(1);
+
+            // Afastamentos com base na zona atual
+            const zData = _currentZoneData;
+            if (zData) {
+                const pav = (zData.pav_max_adi || parseInt(zData.params?.pavimentos_padrao) || 2);
+                const altF = parseFloat(zData.params?.altura_fachada) || pav * 3;
+                const af = calcAfastamentos(pav, altF);
+                const largUtil = Math.max(0, t - af.lat * 2);
+                const profUtil = Math.max(0, l - af.frontal - af.fundos);
+                const areaUtil = largUtil * profUtil;
+
+                afEl.style.display = 'flex';
+                afVal.textContent = `Frontal ${af.frontal}m · Lateral ${af.lat.toFixed(1)}m · Fundos ${af.fundos.toFixed(1)}m`;
+                if (areaUtil > 0) {
+                    utilRow.style.display = 'flex';
+                    utilVal.textContent = num(areaUtil, 0) + ' m² (orientativa)';
+                }
+            } else {
+                afEl.style.display = 'none';
+                utilRow.style.display = 'none';
+            }
+        } else {
+            box.style.display = t > 0 || l > 0 ? 'block' : 'none';
+            valEl.textContent = '—';
+        }
+        calculate();
+    }
+
+    let _currentZoneData = null;
+
+    async function consultarZona() {
+        const address = document.getElementById('endereco').value.trim();
+        if (!address) return;
+
+        const btn    = document.getElementById('btn-consultar');
+        const status = document.getElementById('endereco-status');
+
+        btn.classList.add('loading');
+        status.className = 'endereco-status loading';
+        status.textContent = 'Consultando Nominatim + GeoFloripa PMF...';
+        status.style.display = 'block';
+
+        try {
+            const res  = await fetch(`/api/zona?address=${encodeURIComponent(address)}`);
+            const data = await res.json();
+
+            if (!res.ok) {
+                status.className = 'endereco-status err';
+                status.textContent = '✗ ' + (data.error || 'Erro desconhecido');
+                btn.classList.remove('loading');
+                return;
+            }
+
+            const zonaNome = data.zona.replace(/\s+/g,' ').trim();
+            document.getElementById('zona').value = zonaNome;
+            const matched = true;
+
+            // Preenche parâmetros diretamente da API (mais preciso que o ZONAS_DB local)
+            if (data.params) {
+                const p = data.params;
+                const toNum = v => v !== null && v !== undefined ? parseFloat(v) : null;
+                const toInt = v => v !== null && v !== undefined ? parseInt(v) : null;
+
+                const paramsEl = document.getElementById('zona-params');
+                const warnEl   = document.getElementById('zp-warn');
+                const nomeGrande = document.getElementById('zp-nome-grande');
+                if (nomeGrande) nomeGrande.textContent = `${zonaNome} — ${data.descricao}`;
+                document.getElementById('zp-cabasico').textContent = toNum(p.ca_basico)?.toFixed(2) + '×' || '—';
+                document.getElementById('zp-camax').textContent    = toNum(p.ca_maximo)?.toFixed(2) + '×' || '—';
+                document.getElementById('zp-to').textContent       = p.taxa_ocupacao ? p.taxa_ocupacao + '%' : '—';
+                const pavBase = parseInt(p.pavimentos_padrao) || 0;
+                const pavTDC  = parseInt(p.pavimentos_tdc)   || 0;
+                const pavMaxAdi = data.pav_max_adi || pavBase;
+                const pavAdiAcr = data.pav_adicional_adi || 0;
+                let pavText = pavBase + (pavTDC > 0 ? ` (+${pavTDC} TDC)` : '');
+                if (pavAdiAcr > 0) pavText += ` → ${pavMaxAdi} c/ ADI`;
+                document.getElementById('zp-pav').textContent = pavText;
+                document.getElementById('zp-altf').textContent     = p.altura_fachada + ' m';
+                document.getElementById('zp-altc').textContent     = p.altura_cumeeira + ' m';
+                document.getElementById('zp-lote').textContent     = p.lote_minimo ? p.lote_minimo + ' m²' : 'N/A';
+                document.getElementById('zp-test').textContent     = p.testada_minima ? p.testada_minima + ' m' : 'N/A';
+                paramsEl.style.display = 'block';
+
+                const warn = ZONA_WARNS[zonaNome];
+                if (warn) { warnEl.textContent = '⚠ ' + warn; warnEl.style.display = 'block'; }
+                else       { warnEl.style.display = 'none'; }
+
+                // Renderiza potencial com dados da API
+                const terrain = parseFloat(document.getElementById('terrain').value) || 0;
+                const zArr = [
+                    toInt(p.pavimentos_padrao), toInt(p.pavimentos_tdc),
+                    toNum(p.taxa_ocupacao), toNum(p.taxa_impermeab),
+                    toNum(p.altura_fachada), toNum(p.altura_cumeeira),
+                    toNum(p.ca_minimo), toNum(p.ca_basico), toNum(p.ca_oodc),
+                    toNum(p.ca_tdc), toNum(p.ca_subsolos), toNum(p.ca_maximo),
+                    toNum(p.lote_minimo), toNum(p.testada_minima), toNum(p.densidade_liquida)
+                ];
+                _currentZoneData = data;
+                updatePavResumo(data);
+                document.getElementById('pot-zona-nome').textContent = zonaNome;
+                const terrain2 = parseFloat(document.getElementById('terrain').value) || 0;
+                renderPotencial(zArr, terrain2, data.adi, data.pav_max_adi);
+                calcArea(); // atualiza afastamentos com nova zona
+            }
+
+            status.className = 'endereco-status ok';
+            let statusHtml = `✓ Zona identificada: <strong>${zonaNome}</strong> — ${data.descricao}`;
+            if (data.adi) {
+                statusHtml += `<br><span style="color:#fbbf24;font-weight:700">⚡ ${data.adi.tipo} — ${data.adi.hierarquia}</span>: pavimentos máx. com incentivos = <strong style="color:#fbbf24">${data.pav_max_adi}</strong>`;
+            }
+            status.innerHTML = statusHtml;
+
+        } catch (e) {
+            status.className = 'endereco-status err';
+            status.textContent = '✗ Falha na requisição. Verifique a conexão.';
+        }
+        btn.classList.remove('loading');
+    }
+
+    function getZona() {
+        const el = document.getElementById('zona');
+        return el ? el.value : '';
+    }
+
+    function renderPotencial(z, terrain, adiInfo, pavMaxAdi) {
+        const nomeEl = document.getElementById('pot-zona-nome');
+        const bodyEl = document.getElementById('pot-body');
+        const zona = getZona();
+
+        if (!z || !terrain) {
+            if (nomeEl) nomeEl.textContent = zona || 'Selecione a zona';
+            if (bodyEl) bodyEl.innerHTML = '<div class="pot-empty">' +
+                (zona && !terrain ? 'Informe a área do terreno para calcular.' :
+                 'Selecione a zona no painel ao lado para calcular o potencial máximo do terreno.') +
+                '</div>';
+            return;
+        }
+
+        const [pavP,pavT,to,ti,altF,altC,caMin,caB,caO,caT,caSub,caMax,loteMin,testMin,dens] = z;
+
+        const areaComputavelMax = (caMax * terrain).toFixed(0);
+        const areaComputavelB   = (caB   * terrain).toFixed(0);
+        const areaOcupacaoMax   = (to/100 * terrain).toFixed(0);
+        const pavTotal          = pavMaxAdi || (pavP + pavT);
+        const pavLabel          = adiInfo
+            ? `${pavP} base → <strong style="color:#fbbf24">${pavMaxAdi} c/ incentivos ${adiInfo.tipo}</strong>`
+            : `${pavP} padrão${pavT > 0 ? ` + ${pavT} via TDC` : ''} · ${altF}m fachada`;
+
+        // Uso misto elegível?
+        const zonaBase = zona.split(' ')[0];
+        const usoMistoElegivel = ZONAS_USO_MISTO.has(zonaBase);
+        const areaTotal = caMax * terrain;
+        const pavComUsoMisto = pavTotal + 1;
+        const areaComercialMin = pavTotal <= 5
+            ? Math.max(25, areaTotal / 6)
+            : Math.max(25, areaTotal / 3);
+
+        const usoMistoBadge = usoMistoElegivel ? `
+            <div style="background:rgba(5,150,105,0.12);border:1px solid rgba(5,150,105,0.3);border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:12px;color:#d1fae5">
+                <strong style="color:#6ee7b7">+ Incentivo Uso Misto (Dec. 25.647/2023)</strong><br>
+                +1 pavimento extra (→ ${pavComUsoMisto} pav total) · TO × 1,3<br>
+                <span style="color:#fef3c7">⚠ Área comercial mínima obrigatória: <strong>${num(areaComercialMin, 0)} m²</strong>
+                (${pavTotal <= 5 ? '1/6' : '1/3'} da área computável concedida, mín 25m²). Fachada ativa + fruição pública exigidas.</span>
+            </div>` : '';
+
+        const adiBadge = adiInfo ? `
+            <div style="background:rgba(251,191,36,0.12);border:1px solid rgba(251,191,36,0.35);border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:#fef3c7">
+                <strong style="color:#fbbf24">⚡ ${adiInfo.tipo} — ${adiInfo.hierarquia}</strong><br>
+                ${adiInfo.label}${adiInfo.trecho ? ` · ${adiInfo.trecho}` : ''}<br>
+                <span style="opacity:.7;font-size:11px">Incentivos conforme Dec. 25.644/2023. Máx. de pavimentos combinando ADI + uso misto + fruição pública — Dec. 25.643/2023.</span><br>
+                ${(zonaBase === 'ARP' || zonaBase === 'ZEIS') ? `<span style="color:#fca5a5;font-size:11px">⚠ Para ARP em ADI: acréscimos de pavimentos exigem aplicação de uso misto (área comercial obrigatória) e/ou fruição pública. Sem esses incentivos o limite é o padrão F01.</span>` : ''}
+            </div>` : '';
+
+        if (nomeEl) nomeEl.textContent = zona;
+        if (bodyEl) bodyEl.innerHTML = `
+            ${adiBadge}
+            ${usoMistoBadge}
+            <div class="pot-grid">
+                <div class="pot-item">
+                    <div class="pot-val">${Number(areaComputavelMax).toLocaleString('pt-BR')}</div>
+                    <div class="pot-unit">m² computáveis</div>
+                    <div class="pot-lbl">CA Máx (${caMax}×) c/ OODC</div>
+                </div>
+                <div class="pot-item">
+                    <div class="pot-val">${Number(areaComputavelB).toLocaleString('pt-BR')}</div>
+                    <div class="pot-unit">m² computáveis</div>
+                    <div class="pot-lbl">CA Básico (${caB}×) s/ outorga</div>
+                </div>
+                <div class="pot-item">
+                    <div class="pot-val">${Number(areaOcupacaoMax).toLocaleString('pt-BR')}</div>
+                    <div class="pot-unit">m² de projeção</div>
+                    <div class="pot-lbl">TO Máx (${to}%) por pavimento</div>
+                </div>
+                <div class="pot-item">
+                    <div class="pot-val" style="${adiInfo?'color:#fbbf24':''}">${pavTotal}</div>
+                    <div class="pot-unit">pavimentos máx.</div>
+                    <div class="pot-lbl" style="font-size:9px">${pavLabel}</div>
+                </div>
+            </div>
+            <div class="pot-note">
+                <strong>CA Máximo (${caMax}×):</strong> inclui CA básico (${caB}×) + OODC (${caO}×)${caT>0?` + TDC (${caT}×)`:''}.
+                Áreas não computáveis: subsolos, garagens, lazer e serviço (Art. 69 LC 739/2023). &nbsp;·&nbsp;
+                <strong>TI máx:</strong> ${ti}%. &nbsp;·&nbsp;
+                <strong>Densidade líquida:</strong> ${dens} hab/ha. &nbsp;·&nbsp;
+                Confirme no <a href="https://geoportal.pmf.sc.gov.br" target="_blank" style="color:#93c5fd">Geoportal PMF</a>.
+            </div>`;
+    }
+
     // ── Coeficientes do PDF (terreno de referência) ──
     const PDF = {
         terrain: 1677, totalBuilt: 6650.52,
@@ -1382,8 +2081,12 @@
         return isFinite(r) && r > -1 ? r : null;
     }
 
-    document.querySelectorAll('input').forEach(inp => inp.addEventListener('input', calculate));
+    document.querySelectorAll('input[type=number], input[type=text]').forEach(inp => {
+        if (inp.id === 'testada' || inp.id === 'lateral') return; // handled by calcArea()
+        inp.addEventListener('input', calculate);
+    });
     calculate();
+    calcArea();
 </script>
 </body>
 </html>
