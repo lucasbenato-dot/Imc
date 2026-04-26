@@ -787,7 +787,6 @@
         <div class="brand-name">Kósmos <em>Empreendimentos</em></div>
         <div class="brand-sub">Estudo de Viabilidade</div>
     </div>
-    <div style="margin-left:auto; font-size:13px; opacity:0.55; font-weight:500; letter-spacing:0.3px;">Olá, André</div>
 </header>
 
 <main>
@@ -795,28 +794,8 @@
     <aside class="input-panel">
         <div class="panel-title">Parâmetros do Projeto</div>
 
-        <!-- ── ENDEREÇO E METRAGEM ── -->
+        <!-- ── METRAGEM ── -->
         <div class="section-label">Terreno</div>
-
-        <div class="input-group">
-            <label>Endereço do Terreno <em>digite para sugestões</em></label>
-            <div class="addr-wrapper">
-                <div class="addr-row">
-                    <div class="input-wrap addr">
-                        <input type="text" id="endereco" placeholder="Ex: Jardim dos Eucaliptos…"
-                               value="Rua Jardim dos Eucaliptos, Campeche 1016"
-                               autocomplete="off"
-                               oninput="onEnderecoInput()"
-                               onkeydown="onEnderecoKey(event)">
-                    </div>
-                    <button class="btn-consultar" id="btn-consultar" onclick="consultarZona()" title="Identificar zona automaticamente">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-                    </button>
-                </div>
-                <div id="autocomplete-list" style="display:none"></div>
-            </div>
-            <div id="endereco-status" class="endereco-status" style="display:none"></div>
-        </div>
 
         <!-- Resumo de pavimentos (aparece após consulta) -->
         <div class="pav-resumo" id="pav-resumo" style="display:none">
@@ -1028,14 +1007,6 @@
     <!-- ── RESULTS PANEL ── -->
     <section class="results-panel">
         <div class="results-title">Resultado da Análise</div>
-
-        <!-- ── POTENCIAL CONSTRUTIVO ── -->
-        <div class="potencial-card" id="potencial-card">
-            <h3>Potencial Construtivo Máximo — <span id="pot-zona-nome">Selecione a zona</span></h3>
-            <div id="pot-body">
-                <div class="pot-empty">Selecione a zona no painel ao lado para calcular o potencial máximo do terreno conforme o Plano Diretor 2023.</div>
-            </div>
-        </div>
 
         <!-- Projeto físico – linha 1 -->
         <div class="grid-3">

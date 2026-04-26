@@ -210,6 +210,10 @@ def get_zona():
 def viabilidade():
     return render_template("viabilidade.html")
 
+@app.route("/confinamento")
+def confinamento():
+    return render_template("confinamento.html")
+
 @app.route("/imc", methods=["GET", "POST"])
 def index():
     resultado = None

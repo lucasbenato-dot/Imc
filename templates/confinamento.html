@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Confinamento de Gado — Análise Financeira</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --navy: #0f1f3d;
+      --navy-light: #1a3460;
+      --accent: #2563eb;
+      --green: #059669;
+      --red: #dc2626;
+      --gold: #d97706;
+      --orange: #ea580c;
+      --bg: #f0f4f8;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --shadow: 0 2px 8px rgba(15,31,61,0.08), 0 1px 3px rgba(15,31,61,0.05);
+    }
+    body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    .topbar { background: var(--navy); color: rgba(255,255,255,0.75); text-align: center; font-size: 30px; font-weight: 600; letter-spacing: 1px; padding: 10px 40px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+
+    header {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+      color: white; padding: 24px 40px;
+      display: flex; align-items: center; justify-content: space-between;
+      box-shadow: 0 4px 20px rgba(15,31,61,0.3);
+    }
+    .header-left h1 { font-size: 20px; font-weight: 700; letter-spacing: 0.3px; }
+    .header-left p  { font-size: 12px; opacity: 0.6; margin-top: 3px; letter-spacing: 0.5px; }
+    .header-brand { text-align: right; border-left: 1px solid rgba(255,255,255,0.12); padding-left: 24px; margin-left: 24px; }
+    .header-brand .brand-name { font-size: 22px; font-weight: 800; letter-spacing: 0.5px; color: white; line-height: 1.1; }
+    .header-brand .brand-name em { font-style: normal; color: #93c5fd; }
+    .header-brand .brand-sub { font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase; opacity: 0.5; margin-top: 3px; }
+
+    nav { background: white; border-bottom: 1px solid var(--border); padding: 0 40px; display: flex; gap: 4px; }
+    nav a { display: inline-block; padding: 12px 16px; font-size: 13px; font-weight: 500; color: var(--muted); text-decoration: none; border-bottom: 3px solid transparent; transition: all .15s; }
+    nav a:hover { color: var(--text); }
+    nav a.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+    main { max-width: 1400px; margin: 0 auto; padding: 28px 24px; display: grid; grid-template-columns: 380px 1fr; gap: 20px; }
+
+    /* ── CARDS ── */
+    .card { background: var(--card); border-radius: 12px; box-shadow: var(--shadow); border: 1px solid var(--border); overflow: hidden; }
+    .card-header { padding: 14px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; background: #f8fafc; }
+    .card-header h3 { font-size: 13px; font-weight: 700; color: var(--navy); letter-spacing: 0.3px; text-transform: uppercase; }
+    .card-header .icon { width: 28px; height: 28px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+    .card-body { padding: 16px 18px; }
+
+    /* ── INPUTS ── */
+    .input-left { display: flex; flex-direction: column; gap: 16px; }
+    .field { display: flex; flex-direction: column; gap: 4px; }
+    .field label { font-size: 11px; font-weight: 600; color: var(--muted); letter-spacing: 0.5px; text-transform: uppercase; }
+    .field input, .field select {
+      padding: 8px 10px; border: 1.5px solid var(--border); border-radius: 7px;
+      font-size: 13px; font-family: inherit; color: var(--text); background: white;
+      transition: border-color .15s;
+    }
+    .field input:focus, .field select:focus { outline: none; border-color: var(--accent); }
+    .field .hint { font-size: 10px; color: var(--muted); }
+
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .field-row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+
+    /* ── DIETA PERCENTUAIS ── */
+    .diet-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .diet-item { background: #f8fafc; border-radius: 8px; padding: 10px 12px; }
+    .diet-item label { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; display: block; margin-bottom: 4px; }
+    .diet-item input { width: 100%; padding: 6px 8px; border: 1.5px solid var(--border); border-radius: 6px; font-size: 13px; font-family: inherit; }
+    .diet-item input:focus { outline: none; border-color: var(--accent); }
+    .diet-total { text-align: right; font-size: 11px; margin-top: 6px; font-weight: 600; }
+    .diet-total.ok { color: var(--green); }
+    .diet-total.err { color: var(--red); }
+
+    /* ── RESULTS ── */
+    .results-panel { display: flex; flex-direction: column; gap: 16px; }
+
+    /* Metrics row */
+    .metrics-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+    .metric-card { background: var(--card); border-radius: 12px; box-shadow: var(--shadow); border: 1px solid var(--border); padding: 16px 18px; }
+    .metric-card .label { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+    .metric-card .value { font-size: 22px; font-weight: 800; line-height: 1; }
+    .metric-card .sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
+    .green { color: var(--green); }
+    .red { color: var(--red); }
+    .navy { color: var(--navy); }
+    .gold { color: var(--gold); }
+
+    /* Breakdown table */
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+    th { background: #f8fafc; color: var(--muted); font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; padding: 8px 12px; text-align: right; border-bottom: 1px solid var(--border); }
+    th:first-child { text-align: left; }
+    td { padding: 8px 12px; text-align: right; border-bottom: 1px solid #f1f5f9; color: var(--text); }
+    td:first-child { text-align: left; font-weight: 500; }
+    tr:last-child td { border-bottom: none; }
+    .total-row td { font-weight: 700; background: #f8fafc; border-top: 2px solid var(--border); }
+    .result-row td { font-weight: 700; font-size: 14px; }
+    .result-row td.pos { color: var(--green); }
+    .result-row td.neg { color: var(--red); }
+    .subtotal-row td { font-weight: 600; color: var(--muted); font-size: 11.5px; background: #fafbff; }
+
+    /* Two-column bottom area */
+    .bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    /* Cash flow display */
+    .cf-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid #f1f5f9; }
+    .cf-row:last-child { border-bottom: none; }
+    .cf-period { font-size: 11px; font-weight: 700; color: var(--muted); min-width: 60px; }
+    .cf-bar-wrap { flex: 1; height: 8px; background: #f1f5f9; border-radius: 4px; overflow: hidden; }
+    .cf-bar { height: 100%; border-radius: 4px; transition: width .3s; }
+    .cf-bar.neg-bar { background: #fca5a5; }
+    .cf-bar.pos-bar { background: #6ee7b7; }
+    .cf-value { font-size: 11.5px; font-weight: 600; min-width: 100px; text-align: right; }
+    .cf-value.neg { color: var(--red); }
+    .cf-value.pos { color: var(--green); }
+
+    /* KPI indicators */
+    .kpi-list { display: flex; flex-direction: column; gap: 10px; }
+    .kpi-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: #f8fafc; border-radius: 8px; }
+    .kpi-item .kpi-label { font-size: 12px; font-weight: 500; color: var(--muted); }
+    .kpi-item .kpi-value { font-size: 14px; font-weight: 700; }
+
+    /* Alimentação detail */
+    .alim-row { display: flex; align-items: center; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid #f1f5f9; font-size: 12px; }
+    .alim-row:last-child { border-bottom: none; }
+    .alim-name { font-weight: 600; min-width: 70px; }
+    .alim-data { color: var(--muted); flex: 1; padding: 0 8px; text-align: center; font-size: 11px; }
+    .alim-cost { font-weight: 700; min-width: 90px; text-align: right; }
+    .alim-pct-bar { width: 60px; height: 6px; background: #e2e8f0; border-radius: 3px; overflow: hidden; display: inline-block; margin-left: 8px; }
+    .alim-pct-fill { height: 100%; border-radius: 3px; background: var(--accent); }
+
+    /* Badge */
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+    .badge-green { background: #d1fae5; color: var(--green); }
+    .badge-red { background: #fee2e2; color: var(--red); }
+    .badge-gold { background: #fef3c7; color: var(--gold); }
+
+    .divider { height: 1px; background: var(--border); margin: 4px 0; }
+
+    @media (max-width: 1100px) {
+      main { grid-template-columns: 1fr; }
+      .metrics-row { grid-template-columns: repeat(2, 1fr); }
+      .bottom-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <h1>Confinamento de Gado</h1>
+    <p>ANÁLISE FINANCEIRA · FLUXO DE CAIXA · TIR</p>
+  </div>
+  <div class="header-brand">
+    <div class="brand-name">Fazenda <em>Horizonte Largo</em></div>
+    <div class="brand-sub">Gestão &amp; Resultados</div>
+  </div>
+</header>
+
+<nav>
+  <a href="/viabilidade">Viabilidade Imobiliária</a>
+  <a href="/confinamento" class="active">Confinamento</a>
+  <a href="/imc">IMC</a>
+</nav>
+
+<main>
+  <!-- ── COLUNA ESQUERDA: INPUTS ── -->
+  <div class="input-left">
+
+    <!-- Lote -->
+    <div class="card">
+      <div class="card-header">
+        <div class="icon" style="background:#dbeafe;">🐄</div>
+        <h3>Dados do Lote</h3>
+      </div>
+      <div class="card-body" style="display:flex;flex-direction:column;gap:10px;">
+        <div class="field">
+          <label>Número de Animais</label>
+          <input type="number" id="n_animais" value="200" min="1" step="1">
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Peso Entrada (kg)</label>
+            <input type="number" id="peso_entrada" value="300" step="0.1">
+          </div>
+          <div class="field">
+            <label>GMD (kg/dia)</label>
+            <input type="number" id="gpd" value="1.40" step="0.01">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Dias Confinamento</label>
+            <input type="number" id="dias" value="70" step="1">
+          </div>
+          <div class="field">
+            <label>Peso Saída (kg)</label>
+            <input type="number" id="peso_saida" value="398" step="0.1">
+            <span class="hint">Calculado automaticamente</span>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>R$/kg Compra</label>
+            <input type="number" id="preco_compra" value="12.50" step="0.01">
+          </div>
+          <div class="field">
+            <label>R$/kg Venda</label>
+            <input type="number" id="preco_venda" value="12.60" step="0.01">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Preços Insumos -->
+    <div class="card">
+      <div class="card-header">
+        <div class="icon" style="background:#fef3c7;">🌽</div>
+        <h3>Preços dos Insumos (R$/ton)</h3>
+      </div>
+      <div class="card-body" style="display:flex;flex-direction:column;gap:10px;">
+        <div class="field-row">
+          <div class="field">
+            <label>Milho (88% MS)</label>
+            <input type="number" id="preco_milho" value="1300" step="10">
+          </div>
+          <div class="field">
+            <label>Soja (88% MS)</label>
+            <input type="number" id="preco_soja" value="1300" step="10">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Silagem (35% MS)</label>
+            <input type="number" id="preco_silagem" value="250" step="10">
+          </div>
+          <div class="field">
+            <label>Núcleo (99% MS)</label>
+            <input type="number" id="preco_nucleo" value="3200" step="10">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dieta -->
+    <div class="card">
+      <div class="card-header">
+        <div class="icon" style="background:#d1fae5;">🥗</div>
+        <h3>Dieta (% Matéria Seca)</h3>
+      </div>
+      <div class="card-body">
+        <div class="diet-grid">
+          <div class="diet-item">
+            <label>Volumoso %</label>
+            <input type="number" id="pct_volumoso" value="0" step="1" min="0" max="100">
+          </div>
+          <div class="diet-item">
+            <label>Milho %</label>
+            <input type="number" id="pct_milho" value="76" step="1" min="0" max="100">
+          </div>
+          <div class="diet-item">
+            <label>Soja %</label>
+            <input type="number" id="pct_soja" value="22" step="1" min="0" max="100">
+          </div>
+          <div class="diet-item">
+            <label>Núcleo %</label>
+            <input type="number" id="pct_nucleo" value="2" step="1" min="0" max="100">
+          </div>
+        </div>
+        <div id="diet_total_msg" class="diet-total ok">Total: 100%</div>
+        <div style="margin-top:12px;">
+          <div class="field">
+            <label>Consumo MS (% Peso Vivo/dia)</label>
+            <input type="number" id="cons_ms_pct" value="2.52" step="0.01" min="0.5" max="5">
+            <span class="hint">Padrão: 2.52% do peso médio</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Custos Operacionais -->
+    <div class="card">
+      <div class="card-header">
+        <div class="icon" style="background:#fee2e2;">💼</div>
+        <h3>Custos Operacionais</h3>
+      </div>
+      <div class="card-body" style="display:flex;flex-direction:column;gap:10px;">
+        <div class="field-row">
+          <div class="field">
+            <label>Funcionários</label>
+            <input type="number" id="funcionarios" value="1" step="1" min="0">
+          </div>
+          <div class="field">
+            <label>Salário Mensal (R$)</label>
+            <input type="number" id="salario" value="3800" step="100">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Remédio (R$/cabeça)</label>
+            <input type="number" id="custo_remedio" value="25" step="1">
+          </div>
+          <div class="field">
+            <label>Outros Custos (R$)</label>
+            <input type="number" id="outros_custos" value="8000" step="100">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Imposto (%)</label>
+            <input type="number" id="imposto" value="0" step="0.1" min="0" max="100">
+          </div>
+          <div class="field">
+            <label>Dias úteis/ano</label>
+            <input type="number" id="dias_ano" value="330" step="5">
+            <span class="hint">Usado para resultado anualizado</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /input-left -->
+
+  <!-- ── COLUNA DIREITA: RESULTADOS ── -->
+  <div class="results-panel">
+
+    <!-- Métricas principais -->
+    <div class="metrics-row">
+      <div class="metric-card">
+        <div class="label">Resultado</div>
+        <div class="value" id="m_resultado">—</div>
+        <div class="sub" id="m_margem">Margem —</div>
+      </div>
+      <div class="metric-card">
+        <div class="label">TIR Mensal</div>
+        <div class="value" id="m_tir">—</div>
+        <div class="sub" id="m_tir_anual">TIR Anual —</div>
+      </div>
+      <div class="metric-card">
+        <div class="label">Resultado Mensal</div>
+        <div class="value navy" id="m_mensal">—</div>
+        <div class="sub" id="m_anual">Anual —</div>
+      </div>
+      <div class="metric-card">
+        <div class="label">Lucro / Cabeça</div>
+        <div class="value gold" id="m_lucro_cab">—</div>
+        <div class="sub" id="m_agio">Ágio —</div>
+      </div>
+      <div class="metric-card">
+        <div class="label">Diária / Animal</div>
+        <div class="value" id="m_diaria" style="color:#7c3aed;">—</div>
+        <div class="sub">Custo operacional por dia</div>
+      </div>
+    </div>
+
+    <!-- Demonstrativo financeiro -->
+    <div class="card">
+      <div class="card-header">
+        <div class="icon" style="background:#dbeafe;">📊</div>
+        <h3>Demonstrativo Financeiro</h3>
+        <div style="margin-left:auto;font-size:11px;color:var(--muted);" id="info_lote">—</div>
+      </div>
+      <div class="card-body table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Descrição</th>
+              <th>R$ / animal</th>
+              <th>R$ Total</th>
+              <th>%</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="background:#f0fdf4;">
+              <td><strong>Faturamento</strong></td>
+              <td id="t_fat_animal">—</td>
+              <td id="t_fat_total" style="color:var(--green);font-weight:700;">—</td>
+              <td>100%</td>
+            </tr>
+            <tr class="subtotal-row"><td colspan="4">Custos</td></tr>
+            <tr>
+              <td>Compra do Gado</td>
+              <td id="t_gado_animal">—</td>
+              <td id="t_gado_total">—</td>
+              <td id="t_gado_pct">—</td>
+            </tr>
+            <tr>
+              <td>Alimentação</td>
+              <td id="t_alim_animal">—</td>
+              <td id="t_alim_total">—</td>
+              <td id="t_alim_pct">—</td>
+            </tr>
+            <tr>
+              <td>Mão de Obra</td>
+              <td id="t_mao_animal">—</td>
+              <td id="t_mao_total">—</td>
+              <td id="t_mao_pct">—</td>
+            </tr>
+            <tr>
+              <td>Remédio</td>
+              <td id="t_rem_animal">—</td>
+              <td id="t_rem_total">—</td>
+              <td id="t_rem_pct">—</td>
+            </tr>
+            <tr>
+              <td>Imposto</td>
+              <td id="t_imp_animal">—</td>
+              <td id="t_imp_total">—</td>
+              <td id="t_imp_pct">—</td>
+            </tr>
+            <tr>
+              <td>Outros</td>
+              <td id="t_out_animal">—</td>
+              <td id="t_out_total">—</td>
+              <td id="t_out_pct">—</td>
+            </tr>
+            <tr class="total-row">
+              <td>Custo Total</td>
+              <td id="t_ctotal_animal">—</td>
+              <td id="t_ctotal_total">—</td>
+              <td id="t_ctotal_pct">—</td>
+            </tr>
+            <tr class="result-row">
+              <td><strong>Resultado</strong></td>
+              <td id="t_res_animal" class="pos">—</td>
+              <td id="t_res_total" class="pos">—</td>
+              <td id="t_res_pct" class="pos">—</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Linha inferior -->
+    <div class="bottom-grid">
+
+      <!-- Alimentação detalhada -->
+      <div class="card">
+        <div class="card-header">
+          <div class="icon" style="background:#fef3c7;">🌾</div>
+          <h3>Composição da Dieta</h3>
+        </div>
+        <div class="card-body">
+          <div style="display:flex;justify-content:space-between;font-size:10.5px;color:var(--muted);margin-bottom:8px;padding:0 0 6px;border-bottom:1px solid var(--border);">
+            <span>Ingrediente</span>
+            <span>kg/cab/dia&nbsp;&nbsp;&nbsp;&nbsp;Custo/dia&nbsp;&nbsp;&nbsp;&nbsp;Total (ton)</span>
+            <span>Custo Total</span>
+          </div>
+          <div id="alim_silagem" class="alim-row" style="display:none;">
+            <span class="alim-name" style="color:#6b7280;">Silagem</span>
+            <span class="alim-data" id="alim_s_data">—</span>
+            <span class="alim-cost" id="alim_s_cost">—</span>
+          </div>
+          <div class="alim-row">
+            <span class="alim-name" style="color:#d97706;">Milho</span>
+            <span class="alim-data" id="alim_m_data">—</span>
+            <span class="alim-cost" id="alim_m_cost">—</span>
+          </div>
+          <div class="alim-row">
+            <span class="alim-name" style="color:#2563eb;">Soja</span>
+            <span class="alim-data" id="alim_so_data">—</span>
+            <span class="alim-cost" id="alim_so_cost">—</span>
+          </div>
+          <div class="alim-row">
+            <span class="alim-name" style="color:#7c3aed;">Núcleo</span>
+            <span class="alim-data" id="alim_n_data">—</span>
+            <span class="alim-cost" id="alim_n_cost">—</span>
+          </div>
+          <div class="divider" style="margin:10px 0;"></div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:700;padding:4px 0;">
+            <span>Total Ração</span>
+            <span id="alim_total_data" style="color:var(--muted);font-size:11px;font-weight:400;">—</span>
+            <span id="alim_total_cost">—</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:6px;">
+            <span>ConsMS / cab / dia</span>
+            <span id="alim_cons_ms">—</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:2px;">
+            <span>Custo / kg ração</span>
+            <span id="alim_custo_kg">—</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:700;color:var(--navy);margin-top:8px;padding-top:8px;border-top:1px solid var(--border);">
+            <span>Diária alimentação / animal</span>
+            <span id="alim_diaria" style="font-size:16px;">—</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:700;color:var(--orange);margin-top:8px;">
+            <span>Custo operacional diário / animal</span>
+            <span id="alim_diaria_op" style="font-size:16px;">—</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:700;color:var(--red);margin-top:8px;">
+            <span>Custo total diário / animal</span>
+            <span id="alim_diaria_total" style="font-size:16px;">—</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:700;color:var(--green);margin-top:8px;">
+            <span>Receita diária / animal (GMD × R$/kg)</span>
+            <span id="alim_receita_diaria" style="font-size:16px;">—</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;font-size:14px;font-weight:800;margin-top:10px;padding-top:10px;border-top:2px solid var(--border);">
+            <span>Lucro / Prejuízo diário cocho / animal</span>
+            <span id="alim_lucro_diario" style="font-size:15px;">—</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:700;color:var(--gold);margin-top:8px;">
+            <span>Resultado diário ágio/deságio / animal</span>
+            <span id="alim_agio_diario" style="font-size:16px;">—</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;font-size:14px;font-weight:800;margin-top:10px;padding-top:10px;border-top:2px solid var(--border);">
+            <span>Resultado total diário / animal</span>
+            <span id="alim_resultado_total_diario" style="font-size:20px;">—</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- KPIs e Fluxo de Caixa -->
+      <div style="display:flex;flex-direction:column;gap:16px;">
+
+        <!-- Indicadores de eficiência -->
+        <div class="card">
+          <div class="card-header">
+            <div class="icon" style="background:#d1fae5;">📈</div>
+            <h3>Indicadores</h3>
+          </div>
+          <div class="card-body kpi-list">
+            <div class="kpi-item">
+              <span class="kpi-label">Custo kg produzido — Alimento</span>
+              <span class="kpi-value" id="kpi_custo_alim">—</span>
+            </div>
+            <div class="kpi-item">
+              <span class="kpi-label">Custo kg produzido — Demais</span>
+              <span class="kpi-value" id="kpi_custo_dem">—</span>
+            </div>
+            <div class="kpi-item">
+              <span class="kpi-label">Custo kg produzido — Total</span>
+              <span class="kpi-value" id="kpi_custo_tot" style="font-size:16px;">—</span>
+            </div>
+            <div class="divider"></div>
+            <div class="kpi-item">
+              <span class="kpi-label">Ganho Cocho</span>
+              <span class="kpi-value" id="kpi_ganho_cocho">—</span>
+            </div>
+            <div class="kpi-item">
+              <span class="kpi-label">Ganho Ágio</span>
+              <span class="kpi-value" id="kpi_agio">—</span>
+            </div>
+            <div class="kpi-item">
+              <span class="kpi-label">Faturamento / animal</span>
+              <span class="kpi-value" id="kpi_fat_cab">—</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fluxo de caixa -->
+        <div class="card">
+          <div class="card-header">
+            <div class="icon" style="background:#ede9fe;">💰</div>
+            <h3>Fluxo de Caixa</h3>
+            <span style="margin-left:auto;font-size:11px;color:var(--muted);" id="cf_info">—</span>
+          </div>
+          <div class="card-body" id="cf_container">
+            <p style="color:var(--muted);font-size:12px;">Calculando...</p>
+          </div>
+        </div>
+
+      </div><!-- /inner col -->
+    </div><!-- /bottom-grid -->
+
+  </div><!-- /results-panel -->
+</main>
+
+<script>
+// ── Formatação ──────────────────────────────────────────────────
+function fmtR(v, dec=2) {
+  if (v == null || isNaN(v)) return '—';
+  return 'R$ ' + v.toLocaleString('pt-BR', {minimumFractionDigits:dec, maximumFractionDigits:dec});
+}
+function fmtPct(v, dec=2) {
+  if (v == null || isNaN(v)) return '—';
+  return v.toLocaleString('pt-BR', {minimumFractionDigits:dec, maximumFractionDigits:dec}) + '%';
+}
+function fmtNum(v, dec=2) {
+  if (v == null || isNaN(v)) return '—';
+  return v.toLocaleString('pt-BR', {minimumFractionDigits:dec, maximumFractionDigits:dec});
+}
+function set(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+
+// ── IRR (Newton-Raphson) ─────────────────────────────────────────
+function calcIRR(cfs, guess=0.05) {
+  let r = guess;
+  for (let i = 0; i < 1000; i++) {
+    let npv = 0, dnpv = 0;
+    for (let t = 0; t < cfs.length; t++) {
+      const disc = Math.pow(1 + r, t);
+      npv  += cfs[t] / disc;
+      dnpv -= t * cfs[t] / (disc * (1 + r));
+    }
+    const delta = npv / dnpv;
+    r -= delta;
+    if (Math.abs(delta) < 1e-10) return r;
+  }
+  return r;
+}
+
+// ── Leitura dos inputs ──────────────────────────────────────────
+function inp(id) { return parseFloat(document.getElementById(id).value) || 0; }
+
+// ── CÁLCULO PRINCIPAL ───────────────────────────────────────────
+function calcular() {
+  // Inputs básicos
+  const n       = inp('n_animais');
+  const pe      = inp('peso_entrada');
+  const gpd     = inp('gpd');
+  const dias    = inp('dias');
+  const pc      = inp('preco_compra');
+  const pv      = inp('preco_venda');
+  const diasAno = inp('dias_ano');
+  const imp_pct = inp('imposto') / 100;
+
+  // Peso saída calculado
+  const ps_calc = pe + gpd * dias;
+  document.getElementById('peso_saida').value = ps_calc.toFixed(1);
+
+  const pm = (pe + ps_calc) / 2; // peso médio
+
+  // ConsMS
+  const cons_ms_pct = inp('cons_ms_pct') / 100;
+  const cons_ms = pm * cons_ms_pct; // kg MS/animal/dia
+
+  // Dieta %
+  const p_vol  = inp('pct_volumoso') / 100;
+  const p_milho= inp('pct_milho')    / 100;
+  const p_soja = inp('pct_soja')     / 100;
+  const p_nuc  = inp('pct_nucleo')   / 100;
+  const totalPct = (p_vol + p_milho + p_soja + p_nuc) * 100;
+
+  // Validação total dieta
+  const msgEl = document.getElementById('diet_total_msg');
+  msgEl.textContent = 'Total: ' + totalPct.toFixed(1) + '%';
+  msgEl.className = 'diet-total ' + (Math.abs(totalPct - 100) < 0.01 ? 'ok' : 'err');
+
+  // Preços
+  const pr_mil  = inp('preco_milho');
+  const pr_soj  = inp('preco_soja');
+  const pr_sil  = inp('preco_silagem');
+  const pr_nuc  = inp('preco_nucleo');
+
+  // Qtde por animal por dia (kg/animal/dia as-fed usando ConsMS × pct)
+  const q_sil  = cons_ms * p_vol;
+  const q_mil  = cons_ms * p_milho;
+  const q_soj  = cons_ms * p_soja;
+  const q_nuc  = cons_ms * p_nuc;
+  const q_total = q_sil + q_mil + q_soj + q_nuc;
+
+  // Consumo total por período (ton)
+  const ton_sil = q_sil  * n * dias / 1000;
+  const ton_mil = q_mil  * n * dias / 1000;
+  const ton_soj = q_soj  * n * dias / 1000;
+  const ton_nuc = q_nuc  * n * dias / 1000;
+  const ton_tot = ton_sil + ton_mil + ton_soj + ton_nuc;
+
+  // Custo por ingrediente
+  const c_sil = ton_sil * pr_sil;
+  const c_mil = ton_mil * pr_mil;
+  const c_soj = ton_soj * pr_soj;
+  const c_nuc = ton_nuc * pr_nuc;
+  const c_alim = c_sil + c_mil + c_soj + c_nuc;
+
+  // Custo/kg ração
+  const custo_kg_racao = ton_tot > 0 ? c_alim / (ton_tot * 1000) : 0;
+
+  // Custo/dia/animal por ingrediente
+  const d_sil = q_sil * pr_sil / 1000;
+  const d_mil = q_mil * pr_mil / 1000;
+  const d_soj = q_soj * pr_soj / 1000;
+  const d_nuc = q_nuc * pr_nuc / 1000;
+
+  // Demais custos
+  const c_mao  = inp('funcionarios') * inp('salario') * (dias / 30);
+  const c_rem  = inp('custo_remedio') * n;
+  const c_out  = inp('outros_custos');
+
+  // Faturamento
+  const fat = n * ps_calc * pv;
+  const c_imp = fat * imp_pct;
+
+  // Custo gado
+  const c_gado = n * pe * pc;
+
+  // Custo total
+  const c_total = c_gado + c_alim + c_mao + c_rem + c_imp + c_out;
+
+  // Resultado
+  const resultado = fat - c_total;
+  const margem    = fat > 0 ? resultado / fat * 100 : 0;
+
+  // Anualizados
+  const res_mensal   = resultado / (dias / 30);
+  const res_anual    = res_mensal * 12;
+
+  // Lucro/cabeça
+  const lucro_cab  = resultado / n;
+
+  // Ágio
+  const agio = pc > 0 ? (pv - pc) / pc * 100 : 0;
+
+  // Custo kg produzido
+  const ganho_total_kg = (ps_calc - pe) * n;
+  const custo_kgp_alim = ganho_total_kg > 0 ? c_alim / ganho_total_kg : 0;
+  const custo_kgp_dem  = ganho_total_kg > 0 ? (c_mao + c_rem + c_out + c_imp) / ganho_total_kg : 0;
+  const custo_kgp_tot  = custo_kgp_alim + custo_kgp_dem;
+
+  // Ganho Cocho: valorização total sobre custo gado
+  const ganho_cocho = c_gado > 0 ? (fat - c_gado) / c_gado * 100 : 0;
+
+  // ── Fluxo de caixa para TIR ──
+  const n_per = Math.ceil(dias / 30);
+  const custo_op = c_total - c_gado;
+  const custo_per = custo_op / n_per;
+  const cfs = [ -(c_gado + custo_per) ];
+  for (let i = 1; i < n_per; i++) cfs.push(-custo_per);
+  cfs.push(fat);
+
+  const tir_mensal = calcIRR(cfs) * 100;
+  const tir_anual  = (Math.pow(1 + tir_mensal/100, 12) - 1) * 100;
+
+  // ── Atualizar DOM ──────────────────────────────────────────────
+  // Métricas topo
+  const resEl = document.getElementById('m_resultado');
+  resEl.textContent = fmtR(resultado);
+  resEl.className   = 'value ' + (resultado >= 0 ? 'green' : 'red');
+
+  set('m_margem',  'Margem ' + fmtPct(margem));
+  set('m_tir',     fmtPct(tir_mensal));
+  document.getElementById('m_tir').className = 'value ' + (tir_mensal >= 0 ? 'green' : 'red');
+  set('m_tir_anual', 'TIR Anual ' + fmtPct(tir_anual));
+  set('m_mensal',  fmtR(res_mensal, 0));
+  set('m_anual',   'Anual ' + fmtR(res_anual, 0));
+  set('m_lucro_cab', fmtR(lucro_cab));
+  set('m_agio',    'Ágio ' + fmtPct(agio, 1));
+
+  const diaria_animal = (dias > 0 && n > 0) ? (c_total - c_gado) / dias / n : 0;
+  set('m_diaria', fmtR(diaria_animal, 2));
+
+  // Info lote
+  set('info_lote', n.toFixed(0) + ' animais · ' + pe.toFixed(0) + ' → ' + ps_calc.toFixed(1) + ' kg · ' + dias.toFixed(0) + ' dias');
+
+  // Tabela financeira
+  const pA = (v) => fmtR(v / n);
+  const pct = (v) => fat > 0 ? fmtPct(v/fat*100, 1) : '—';
+
+  set('t_fat_animal',   fmtR(fat/n));
+  set('t_fat_total',    fmtR(fat));
+  set('t_gado_animal',  pA(c_gado));  set('t_gado_total',  fmtR(c_gado));   set('t_gado_pct',  pct(c_gado));
+  set('t_alim_animal',  pA(c_alim));  set('t_alim_total',  fmtR(c_alim));   set('t_alim_pct',  pct(c_alim));
+  set('t_mao_animal',   pA(c_mao));   set('t_mao_total',   fmtR(c_mao));    set('t_mao_pct',   pct(c_mao));
+  set('t_rem_animal',   pA(c_rem));   set('t_rem_total',   fmtR(c_rem));    set('t_rem_pct',   pct(c_rem));
+  set('t_imp_animal',   pA(c_imp));   set('t_imp_total',   fmtR(c_imp));    set('t_imp_pct',   pct(c_imp));
+  set('t_out_animal',   pA(c_out));   set('t_out_total',   fmtR(c_out));    set('t_out_pct',   pct(c_out));
+  set('t_ctotal_animal',pA(c_total)); set('t_ctotal_total',fmtR(c_total));  set('t_ctotal_pct',pct(c_total));
+
+  const resAnimal = document.getElementById('t_res_animal');
+  const resTotal  = document.getElementById('t_res_total');
+  const resPct    = document.getElementById('t_res_pct');
+  const cls = resultado >= 0 ? 'pos' : 'neg';
+  resAnimal.textContent = fmtR(lucro_cab); resAnimal.className = cls;
+  resTotal.textContent  = fmtR(resultado); resTotal.className  = cls;
+  resPct.textContent    = fmtPct(margem, 1); resPct.className  = cls;
+
+  // Dieta detalhada
+  document.getElementById('alim_silagem').style.display = q_sil > 0 ? 'flex' : 'none';
+  if (q_sil > 0) {
+    set('alim_s_data', fmtNum(q_sil,2) + ' kg  ·  ' + fmtR(d_sil,2) + '  ·  ' + fmtNum(ton_sil,2) + ' t');
+    set('alim_s_cost', fmtR(c_sil));
+  }
+  set('alim_m_data',  fmtNum(q_mil,2) + ' kg  ·  ' + fmtR(d_mil,2) + '  ·  ' + fmtNum(ton_mil,2) + ' t');
+  set('alim_m_cost',  fmtR(c_mil));
+  set('alim_so_data', fmtNum(q_soj,2) + ' kg  ·  ' + fmtR(d_soj,2) + '  ·  ' + fmtNum(ton_soj,2) + ' t');
+  set('alim_so_cost', fmtR(c_soj));
+  set('alim_n_data',  fmtNum(q_nuc,3) + ' kg  ·  ' + fmtR(d_nuc,2) + '  ·  ' + fmtNum(ton_nuc,2) + ' t');
+  set('alim_n_cost',  fmtR(c_nuc));
+  set('alim_total_data', fmtNum(q_total,2) + ' kg/cab/dia  ·  ' + fmtNum(ton_tot,2) + ' ton total');
+  set('alim_total_cost', fmtR(c_alim));
+  set('alim_cons_ms', fmtNum(cons_ms, 3) + ' kg');
+  set('alim_custo_kg', fmtR(custo_kg_racao, 2) + ' / kg');
+  set('alim_diaria', fmtR(dias > 0 && n > 0 ? c_alim / dias / n : 0, 2) + ' / animal / dia');
+  set('alim_diaria_op', fmtR(dias > 0 && n > 0 ? (c_mao + c_rem + c_out) / dias / n : 0, 2) + ' / animal / dia');
+  set('alim_diaria_total', fmtR(dias > 0 && n > 0 ? (c_alim + c_mao + c_rem + c_out) / dias / n : 0, 2) + ' / animal / dia');
+  set('alim_receita_diaria', fmtR(gpd * pv, 2) + ' / animal / dia');
+  const lucro_diario = gpd * pv - (dias > 0 && n > 0 ? (c_alim + c_mao + c_rem + c_out) / dias / n : 0);
+  const agio_diario = dias > 0 ? (pv - pc) * ps_calc / dias : 0;
+  const ldEl = document.getElementById('alim_lucro_diario');
+  ldEl.textContent = fmtR(lucro_diario, 2) + ' / animal / dia';
+  ldEl.style.color = lucro_diario >= 0 ? 'var(--green)' : 'var(--red)';
+  const adEl = document.getElementById('alim_agio_diario');
+  adEl.textContent = fmtR(agio_diario, 2) + ' / animal / dia';
+  adEl.style.color = agio_diario >= 0 ? 'var(--gold)' : 'var(--red)';
+  const resultado_total_diario = lucro_diario + agio_diario;
+  const rtdEl = document.getElementById('alim_resultado_total_diario');
+  rtdEl.textContent = fmtR(resultado_total_diario, 2) + ' / animal / dia';
+  rtdEl.style.color = resultado_total_diario >= 0 ? 'var(--green)' : 'var(--red)';
+
+  // KPIs
+  set('kpi_custo_alim',  fmtR(custo_kgp_alim, 2) + ' / kg');
+  set('kpi_custo_dem',   fmtR(custo_kgp_dem,  2) + ' / kg');
+  set('kpi_custo_tot',   fmtR(custo_kgp_tot,  2) + ' / kg');
+  set('kpi_ganho_cocho', fmtPct(ganho_cocho, 1));
+  set('kpi_agio',        fmtPct(agio, 1));
+  set('kpi_fat_cab',     fmtR(fat/n, 2));
+
+  // Fluxo de caixa
+  set('cf_info', n_per + ' períodos mensais');
+  const maxAbs = Math.max(...cfs.map(Math.abs));
+  let html = '';
+  cfs.forEach((cf, i) => {
+    const isLast = i === cfs.length - 1;
+    const pct_bar = Math.abs(cf) / maxAbs * 100;
+    const isPos = cf >= 0;
+    const label = i === 0 ? 'Mês 0' : (isLast ? 'Saída' : 'Mês ' + i);
+    html += `
+      <div class="cf-row">
+        <span class="cf-period">${label}</span>
+        <div class="cf-bar-wrap">
+          <div class="cf-bar ${isPos ? 'pos-bar' : 'neg-bar'}" style="width:${pct_bar.toFixed(1)}%"></div>
+        </div>
+        <span class="cf-value ${isPos ? 'pos' : 'neg'}">${fmtR(cf, 0)}</span>
+      </div>`;
+  });
+  document.getElementById('cf_container').innerHTML = html;
+}
+
+// ── Bind: recalcular em qualquer mudança ─────────────────────────
+document.querySelectorAll('input').forEach(el => {
+  el.addEventListener('input', calcular);
+});
+
+// GMD / dias → atualiza peso saída visualmente
+['gpd','dias','peso_entrada'].forEach(id => {
+  document.getElementById(id).addEventListener('input', () => {
+    const ps = inp('peso_entrada') + inp('gpd') * inp('dias');
+    document.getElementById('peso_saida').value = ps.toFixed(1);
+  });
+});
+
+// Inicializar
+calcular();
+</script>
+</body>
+</html>
